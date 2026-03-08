@@ -799,7 +799,7 @@
       }
 
       .schedule-note {
-        text-align: center;
+        text-align: left;
         color: var(--text-secondary);
         font-family: "JetBrains Mono", monospace;
         font-size: 0.8rem;
@@ -810,7 +810,7 @@
         display: inline-flex;
         gap: 1rem;
         flex-wrap: wrap;
-        justify-content: center;
+        justify-content: flex-start;
         clip-path: polygon(
           8px 0,
           calc(100% - 8px) 0,
@@ -826,6 +826,10 @@
       .schedule-note-wrapper {
         text-align: center;
         margin-bottom: 2rem;
+      }
+
+      .schedule-note .full-row {
+        flex-basis: 100%;
       }
 
       .schedule-note code {
@@ -881,6 +885,112 @@
         font-family: "JetBrains Mono", monospace;
         font-size: 0.85rem;
         color: var(--text-muted);
+      }
+
+      /* Team Section */
+      .team-section {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .team-title {
+        font-size: 1.8rem;
+        font-weight: 400;
+        letter-spacing: 0.04em;
+        margin-bottom: 2rem;
+        color: var(--text-primary);
+      }
+
+      .team-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+      }
+
+      .team-card {
+        display: flex;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        background: var(--bg-mid);
+        border: 1px solid var(--line-subtle);
+        text-align: left;
+        clip-path: polygon(
+          12px 0,
+          calc(100% - 12px) 0,
+          100% 12px,
+          100% calc(100% - 12px),
+          calc(100% - 12px) 100%,
+          12px 100%,
+          0 calc(100% - 12px),
+          0 12px
+        );
+      }
+
+      .team-avatar {
+        width: 80px;
+        height: 80px;
+        flex-shrink: 0;
+        object-fit: cover;
+        background: var(--node-available);
+        border: 1px solid var(--line-bright);
+        clip-path: polygon(
+          8px 0,
+          calc(100% - 8px) 0,
+          100% 8px,
+          100% calc(100% - 8px),
+          calc(100% - 8px) 100%,
+          8px 100%,
+          0 calc(100% - 8px),
+          0 8px
+        );
+      }
+
+      .team-info {
+        flex: 1;
+      }
+
+      .team-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        color: var(--text-primary);
+      }
+
+      .team-role {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--day2);
+        margin-bottom: 0.75rem;
+      }
+
+      .team-bio {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: var(--text-secondary);
+      }
+
+      .team-bio em {
+        color: var(--text-primary);
+        font-style: italic;
+      }
+
+      @media (max-width: 768px) {
+        .team-grid {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+
+        .team-card {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+
+        .team-title {
+          font-size: 1.4rem;
+        }
       }
     </style>
   </head>
@@ -994,11 +1104,14 @@
         <p class="subtitle">
           A 5-Day Hands-On Training Course for the AI-Curious (and AI-Skeptical)
         </p>
+        <p class="subtitle" style="margin-top: 0.5rem;">
+          Bruce Eckel and Cody Bontecou
+        </p>
       </div>
 
       <div class="schedule-note-wrapper">
         <div class="schedule-note">
-          <span
+          <span class="full-row"
             ><strong>Schedule:</strong>
             <code>9:00 AM – 1:00 PM</code> daily</span
           >
@@ -1007,29 +1120,6 @@
             <code>1 hour exercise</code></span
           >
           <span><strong>3 sessions per day</strong></span>
-        </div>
-      </div>
-
-      <div class="legend">
-        <div class="legend-item">
-          <div class="legend-color" style="background: var(--day1)"></div>
-          <span>Day 1: Quick Wins</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background: var(--day2)"></div>
-          <span>Day 2: Frameworks & Constraints</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background: var(--day3)"></div>
-          <span>Day 3: Workflow Integration</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background: var(--day4)"></div>
-          <span>Day 4: Advanced Patterns</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background: var(--day5)"></div>
-          <span>Day 5: Strategy & Sprint</span>
         </div>
       </div>
 
@@ -1112,8 +1202,8 @@
         </div>
         <div class="session phase-4">
           <div class="lesson-num">Lesson 11</div>
-          <div class="title">Cross-Language & "Not My Stack"</div>
-          <div class="duration"></div>
+          <div class="title">API Integration & Pipelines</div>
+          <div class="duration">Scripting & chaining prompts</div>
         </div>
         <div class="session phase-5">
           <div class="lesson-num">Lesson 14</div>
@@ -1140,8 +1230,8 @@
         </div>
         <div class="session phase-4">
           <div class="lesson-num">Lesson 12</div>
-          <div class="title">API Integration & Pipelines</div>
-          <div class="duration">Scripting & chaining prompts</div>
+          <div class="title">Cross-Language & "Not My Stack"</div>
+          <div class="duration"></div>
         </div>
         <div class="session phase-5">
           <div class="lesson-num">Lesson 15</div>
@@ -1151,7 +1241,7 @@
       </div>
 
       <!-- DETAILED LESSON BREAKDOWN -->
-      <div class="lessons-detail">
+      <div class="lessons-detail" style="display: none;">
         <!-- DAY 1 -->
         <div class="phase-section">
           <h2 class="phase-title">
@@ -1787,58 +1877,10 @@
             <div class="lesson-header">
               <div>
                 <div class="lesson-title">
-                  Lesson 11: Cross-Language & "Not My Stack"
+                  Lesson 11: API Integration & Pipelines
                 </div>
               </div>
-              <div class="lesson-meta">Day 4 • 10:30 AM<br />1hr 20min</div>
-            </div>
-            <div class="lesson-content">
-              <div class="lecture-section">
-                <div class="section-label">
-                  <span class="time">20 min</span> Lecture
-                </div>
-                <ul>
-                  <li>When and why to translate code between languages</li>
-                  <li>Preserving idioms vs. literal translation</li>
-                  <li>Frontend for backend devs, backend for frontend devs</li>
-                  <li>Demo: Python → Rust with proper error handling</li>
-                </ul>
-              </div>
-              <div class="exercise-section">
-                <div class="section-label">
-                  <span class="time">60 min</span> Exercise (includes breaks)
-                </div>
-                <ul>
-                  <li>
-                    <strong>Task 1:</strong> Port a script to a new language
-                  </li>
-                  <li>
-                    <strong>Task 2:</strong> Build something in your weak area
-                  </li>
-                  <li>
-                    <strong>Task 3:</strong> Fix a CSS layout (backend devs) /
-                    write SQL (frontend devs)
-                  </li>
-                  <li>
-                    <strong>Pair work:</strong> Each person tackles the other's
-                    specialty
-                  </li>
-                </ul>
-                <div class="outcome">
-                  <strong>Outcome:</strong> Reduced fear of "not my area" tasks
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="lesson-card">
-            <div class="lesson-header">
-              <div>
-                <div class="lesson-title">
-                  Lesson 12: API Integration & Pipelines
-                </div>
-              </div>
-              <div class="lesson-meta">Day 4 • 11:50 AM<br />1hr 10min</div>
+              <div class="lesson-meta">Day 4 • 10:30 AM<br />1hr 10min</div>
             </div>
             <div class="lesson-content">
               <div class="lecture-section">
@@ -1877,6 +1919,54 @@
                 <div class="outcome">
                   <strong>Outcome:</strong> A custom AI-powered tool you'll
                   actually use
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">
+                  Lesson 12: Cross-Language & "Not My Stack"
+                </div>
+              </div>
+              <div class="lesson-meta">Day 4 • 11:20 AM<br />1hr 20min</div>
+            </div>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">20 min</span> Lecture
+                </div>
+                <ul>
+                  <li>When and why to translate code between languages</li>
+                  <li>Preserving idioms vs. literal translation</li>
+                  <li>Frontend for backend devs, backend for frontend devs</li>
+                  <li>Demo: Python → Rust with proper error handling</li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">60 min</span> Exercise (includes breaks)
+                </div>
+                <ul>
+                  <li>
+                    <strong>Task 1:</strong> Port a script to a new language
+                  </li>
+                  <li>
+                    <strong>Task 2:</strong> Build something in your weak area
+                  </li>
+                  <li>
+                    <strong>Task 3:</strong> Fix a CSS layout (backend devs) /
+                    write SQL (frontend devs)
+                  </li>
+                  <li>
+                    <strong>Pair work:</strong> Each person tackles the other's
+                    specialty
+                  </li>
+                </ul>
+                <div class="outcome">
+                  <strong>Outcome:</strong> Reduced fear of "not my area" tasks
                 </div>
               </div>
             </div>
@@ -2035,23 +2125,37 @@
       </div>
 
       <footer class="footer">
-        <div class="footer-stats">
-          <div class="stat">
-            <div class="stat-value">15</div>
-            <div class="stat-label">Lessons</div>
-          </div>
-          <div class="stat">
-            <div class="stat-value">5</div>
-            <div class="stat-label">Days</div>
-          </div>
-          <div class="stat">
-            <div class="stat-value">20</div>
-            <div class="stat-label">Hours</div>
+        <div class="team-section">
+          <h2 class="team-title">Meet Your Instructors</h2>
+          <div class="team-grid">
+            <div class="team-card">
+              <img class="team-avatar" src="https://www.mindviewllc.com/publicity/BruceEckel.jpg" alt="Bruce Eckel" />
+              <div class="team-info">
+                <h3 class="team-name">Bruce Eckel</h3>
+                <p class="team-role">Author & Consultant</p>
+                <p class="team-bio">
+                  Author of <em>Thinking in Java</em> and <em>Thinking in C++</em>, 
+                  Bruce has spent decades teaching programmers to think differently 
+                  about code. He brings that same perspective to AI—helping developers 
+                  build intuition rather than just following recipes.
+                </p>
+              </div>
+            </div>
+            <div class="team-card">
+              <img class="team-avatar" src="https://avatars.githubusercontent.com/u/20440899?v=4" alt="Cody Bontecou" />
+              <div class="team-info">
+                <h3 class="team-name">Cody Bontecou</h3>
+                <p class="team-role">Developer & AI Practitioner</p>
+                <p class="team-bio">
+                  A hands-on developer who's been integrating AI into daily 
+                  workflows since the early GPT days. Cody focuses on practical 
+                  patterns that work—from prompt engineering to building custom 
+                  AI-powered tools that actually ship.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-        <p class="footer-note">
-          9:00 AM – 1:00 PM daily · 20min lecture + 60min exercise
-        </p>
       </footer>
     </div>
 
