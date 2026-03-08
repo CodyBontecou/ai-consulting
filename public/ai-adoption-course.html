@@ -185,15 +185,9 @@
             padding: 1rem;
             text-align: center;
             font-weight: 600;
-            border-bottom: 3px solid var(--day-color, var(--line-subtle));
+            border-bottom: 2px solid var(--line-subtle);
             font-size: 1.1rem;
         }
-        
-        .day-header.day-1 { --day-color: var(--day1); }
-        .day-header.day-2 { --day-color: var(--day2); }
-        .day-header.day-3 { --day-color: var(--day3); }
-        .day-header.day-4 { --day-color: var(--day4); }
-        .day-header.day-5 { --day-color: var(--day5); }
         
         .day-header .date {
             font-family: 'JetBrains Mono', monospace;
@@ -216,25 +210,12 @@
         
         .session {
             padding: 0.75rem;
-            padding-top: calc(0.75rem + 3px);
             margin: 4px;
             font-size: 0.85rem;
             background: var(--node-available);
             transition: all 0.3s ease;
             position: relative;
             clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
-            overflow: hidden;
-        }
-        
-        /* Colored accent bar at top - uses ::before to work with clip-path */
-        .session::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--accent-color, var(--line-subtle));
         }
         
         .session:hover {
@@ -246,8 +227,10 @@
             font-size: 0.6rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            opacity: 0.7;
             margin-bottom: 0.25rem;
+            padding-bottom: 0.35rem;
+            border-bottom: 2px solid var(--accent-color, var(--line-subtle));
+            display: inline-block;
         }
         
         .session .title {
@@ -780,27 +763,27 @@
         <div class="calendar">
             <!-- Header Row -->
             <div class="corner"></div>
-            <div class="day-header day-1">
+            <div class="day-header">
                 Monday
                 <div class="date">Day 1</div>
                 <div class="theme">Quick Wins</div>
             </div>
-            <div class="day-header day-2">
+            <div class="day-header">
                 Tuesday
                 <div class="date">Day 2</div>
                 <div class="theme">Frameworks & Constraints</div>
             </div>
-            <div class="day-header day-3">
+            <div class="day-header">
                 Wednesday
                 <div class="date">Day 3</div>
                 <div class="theme">Workflow Integration</div>
             </div>
-            <div class="day-header day-4">
+            <div class="day-header">
                 Thursday
                 <div class="date">Day 4</div>
                 <div class="theme">Advanced Patterns</div>
             </div>
-            <div class="day-header day-5">
+            <div class="day-header">
                 Friday
                 <div class="date">Day 5</div>
                 <div class="theme">Strategy & Capstone</div>
