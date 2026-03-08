@@ -185,9 +185,15 @@
             padding: 1rem;
             text-align: center;
             font-weight: 600;
-            border-bottom: 2px solid var(--line-subtle);
+            border-bottom: 3px solid var(--day-color, var(--line-subtle));
             font-size: 1.1rem;
         }
+        
+        .day-header.day-1 { --day-color: var(--day1); }
+        .day-header.day-2 { --day-color: var(--day2); }
+        .day-header.day-3 { --day-color: var(--day3); }
+        .day-header.day-4 { --day-color: var(--day4); }
+        .day-header.day-5 { --day-color: var(--day5); }
         
         .day-header .date {
             font-family: 'JetBrains Mono', monospace;
