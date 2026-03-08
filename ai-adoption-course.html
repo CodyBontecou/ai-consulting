@@ -1,1443 +1,2079 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script>
-        // Redirect mobile users to the skill tree view (better mobile experience)
-        (function() {
-            var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
-                || (window.innerWidth <= 768);
-            if (isMobile && !sessionStorage.getItem('preferCourseView')) {
-                window.location.replace('ai-adoption-skill-tree.html');
-            }
-        })();
+      // Redirect mobile users to the skill tree view (better mobile experience)
+      (function () {
+        var isMobile =
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent,
+          ) || window.innerWidth <= 768;
+        if (isMobile && !sessionStorage.getItem("preferCourseView")) {
+          window.location.replace("ai-adoption-skill-tree.html");
+        }
+      })();
     </script>
     <title>AI for Programmers: 5-Day Training Course</title>
-    <link rel="icon" type="image/x-icon" href="/public/favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="/public/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/public/favicon-32x32.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png">
-    <link rel="manifest" href="/public/site.webmanifest">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/public/favicon.ico" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/public/favicon-16x16.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/public/favicon-32x32.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/public/apple-touch-icon.png"
+    />
+    <link rel="manifest" href="/public/site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --bg-deep: #0d0d0f;
-            --bg-mid: #151518;
-            --line-subtle: #2a2a30;
-            --line-bright: #4a4a55;
-            --node-locked: #1e1e24;
-            --node-available: #252530;
-            --node-complete: #1a2a20;
-            
-            --day1: #4ade80;
-            --day2: #60a5fa;
-            --day3: #c084fc;
-            --day4: #fbbf24;
-            --day5: #f87171;
-            
-            --text-primary: #e8e8ec;
-            --text-secondary: #888890;
-            --text-muted: #555560;
+      :root {
+        --bg-deep: #0d0d0f;
+        --bg-mid: #151518;
+        --line-subtle: #2a2a30;
+        --line-bright: #4a4a55;
+        --node-locked: #1e1e24;
+        --node-available: #252530;
+        --node-complete: #1a2a20;
+
+        --day1: #4ade80;
+        --day2: #60a5fa;
+        --day3: #c084fc;
+        --day4: #fbbf24;
+        --day5: #f87171;
+
+        --text-primary: #e8e8ec;
+        --text-secondary: #888890;
+        --text-muted: #555560;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Cormorant Garamond", Georgia, serif;
+        background: var(--bg-deep);
+        color: var(--text-primary);
+        min-height: 100vh;
+        line-height: 1.6;
+        padding: 2rem;
+      }
+
+      /* Escher-inspired tessellation background */
+      .escher-bg {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        opacity: 0.06;
+        pointer-events: none;
+      }
+
+      .escher-bg svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Impossible staircase decoration */
+      .impossible-stairs {
+        position: fixed;
+        width: 200px;
+        height: 200px;
+        opacity: 0.08;
+        z-index: 0;
+      }
+
+      .stairs-left {
+        left: 2%;
+        top: 20%;
+        transform: rotate(-15deg);
+      }
+
+      .stairs-right {
+        right: 2%;
+        bottom: 15%;
+        transform: rotate(15deg) scaleX(-1);
+      }
+
+      /* Tessellation animation */
+      @keyframes tessellate-drift {
+        0%,
+        100% {
+          transform: translate(0, 0) rotate(0deg);
         }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        50% {
+          transform: translate(10px, 10px) rotate(1deg);
         }
-        
-        body {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            background: var(--bg-deep);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-            padding: 2rem;
+      }
+
+      .escher-bg {
+        animation: tessellate-drift 60s ease-in-out infinite;
+      }
+
+      /* Main content wrapper */
+      .content-wrapper {
+        position: relative;
+        z-index: 1;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--line-subtle);
+        position: relative;
+      }
+
+      .header::before,
+      .header::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 200px;
+        height: 1px;
+        background: var(--line-subtle);
+      }
+
+      .header::before {
+        left: 0;
+      }
+      .header::after {
+        right: 0;
+      }
+
+      h1 {
+        font-size: 3.2rem;
+        font-weight: 400;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+      }
+
+      .subtitle {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      .legend {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+      }
+
+      .legend-color {
+        width: 12px;
+        height: 12px;
+        clip-path: polygon(
+          3px 0,
+          calc(100% - 3px) 0,
+          100% 3px,
+          100% calc(100% - 3px),
+          calc(100% - 3px) 100%,
+          3px 100%,
+          0 calc(100% - 3px),
+          0 3px
+        );
+      }
+
+      .calendar {
+        display: grid;
+        grid-template-columns: 80px repeat(5, 1fr);
+        gap: 3px;
+        background: var(--line-subtle);
+        border-radius: 0;
+        overflow: hidden;
+        margin-bottom: 3rem;
+        clip-path: polygon(
+          12px 0,
+          calc(100% - 12px) 0,
+          100% 12px,
+          100% calc(100% - 12px),
+          calc(100% - 12px) 100%,
+          12px 100%,
+          0 calc(100% - 12px),
+          0 12px
+        );
+      }
+
+      .time-slot {
+        background: var(--bg-deep);
+        padding: 1rem 0.5rem;
+        text-align: right;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .day-header {
+        background: var(--bg-mid);
+        padding: 1rem;
+        text-align: center;
+        font-weight: 600;
+        border-bottom: 2px solid var(--line-subtle);
+        font-size: 1.1rem;
+      }
+
+      .day-header .date {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        font-weight: 400;
+        margin-top: 0.25rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .day-header .theme {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.65rem;
+        color: var(--text-secondary);
+        font-weight: 400;
+        margin-top: 0.5rem;
+        font-style: italic;
+      }
+
+      .session {
+        padding: 0.75rem;
+        margin: 4px;
+        font-size: 0.85rem;
+        background: var(--node-available);
+        transition: all 0.3s ease;
+        position: relative;
+        clip-path: polygon(
+          6px 0,
+          calc(100% - 6px) 0,
+          100% 6px,
+          100% calc(100% - 6px),
+          calc(100% - 6px) 100%,
+          6px 100%,
+          0 calc(100% - 6px),
+          0 6px
+        );
+      }
+
+      .session:hover {
+        transform: translate(-2px, -2px);
+      }
+
+      .session .lesson-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.25rem;
+        padding-bottom: 0.35rem;
+        border-bottom: 2px solid var(--accent-color, var(--line-subtle));
+        display: inline-block;
+      }
+
+      .session .title {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        line-height: 1.3;
+        font-size: 0.95rem;
+      }
+
+      .session .duration {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.65rem;
+        opacity: 0.6;
+      }
+
+      /* Phase colors - using CSS custom property for the accent bar */
+      .phase-1 {
+        --accent-color: var(--day1);
+      }
+      .phase-2 {
+        --accent-color: var(--day2);
+      }
+      .phase-3 {
+        --accent-color: var(--day3);
+      }
+      .phase-4 {
+        --accent-color: var(--day4);
+      }
+      .phase-5 {
+        --accent-color: var(--day5);
+      }
+
+      .corner {
+        background: var(--bg-deep);
+      }
+
+      /* Lesson Details */
+      .lessons-detail {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .phase-section {
+        margin-bottom: 3rem;
+      }
+
+      .phase-title {
+        font-size: 1.5rem;
+        font-weight: 400;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--line-subtle);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        letter-spacing: 0.02em;
+      }
+
+      .phase-badge {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.65rem;
+        padding: 0.25rem 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        clip-path: polygon(
+          4px 0,
+          calc(100% - 4px) 0,
+          100% 4px,
+          100% calc(100% - 4px),
+          calc(100% - 4px) 100%,
+          4px 100%,
+          0 calc(100% - 4px),
+          0 4px
+        );
+      }
+
+      .phase-badge.p1 {
+        background: var(--day1);
+        color: #0d0d0f;
+      }
+      .phase-badge.p2 {
+        background: var(--day2);
+        color: #0d0d0f;
+      }
+      .phase-badge.p3 {
+        background: var(--day3);
+        color: #0d0d0f;
+      }
+      .phase-badge.p4 {
+        background: var(--day4);
+        color: #0d0d0f;
+      }
+      .phase-badge.p5 {
+        background: var(--day5);
+        color: #0d0d0f;
+      }
+
+      .lesson-card {
+        background: var(--bg-mid);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid var(--line-subtle);
+        position: relative;
+        clip-path: polygon(
+          12px 0,
+          calc(100% - 12px) 0,
+          100% 12px,
+          100% calc(100% - 12px),
+          calc(100% - 12px) 100%,
+          12px 100%,
+          0 calc(100% - 12px),
+          0 12px
+        );
+      }
+
+      .lesson-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+      }
+
+      .lesson-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+
+      .lesson-meta {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        text-align: right;
+        letter-spacing: 0.05em;
+      }
+
+      .lesson-content {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 2rem;
+      }
+
+      .lecture-section,
+      .exercise-section {
+        padding: 1rem;
+        background: var(--bg-deep);
+        clip-path: polygon(
+          8px 0,
+          calc(100% - 8px) 0,
+          100% 8px,
+          100% calc(100% - 8px),
+          calc(100% - 8px) 100%,
+          8px 100%,
+          0 calc(100% - 8px),
+          0 8px
+        );
+      }
+
+      .section-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--text-muted);
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .section-label .time {
+        background: var(--node-available);
+        padding: 0.15rem 0.5rem;
+        clip-path: polygon(
+          3px 0,
+          calc(100% - 3px) 0,
+          100% 3px,
+          100% calc(100% - 3px),
+          calc(100% - 3px) 100%,
+          3px 100%,
+          0 calc(100% - 3px),
+          0 3px
+        );
+        font-variant-numeric: tabular-nums;
+      }
+
+      ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      li {
+        padding: 0.35rem 0;
+        padding-left: 1.25rem;
+        position: relative;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+      }
+
+      li::before {
+        content: "↳";
+        position: absolute;
+        left: 0;
+        color: var(--text-muted);
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .prompt-box {
+        background: var(--node-available);
+        border: 1px solid var(--line-subtle);
+        padding: 1rem;
+        margin-top: 0.75rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        clip-path: polygon(
+          8px 0,
+          calc(100% - 8px) 0,
+          100% 8px,
+          100% calc(100% - 8px),
+          calc(100% - 8px) 100%,
+          8px 100%,
+          0 calc(100% - 8px),
+          0 8px
+        );
+      }
+
+      .prompt-label {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--day1);
+        margin-bottom: 0.5rem;
+      }
+
+      .outcome {
+        margin-top: 1rem;
+        padding: 0.75rem;
+        border-left: 2px solid var(--day1);
+        background: rgba(74, 222, 128, 0.05);
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+      }
+
+      .outcome strong {
+        color: var(--day1);
+      }
+
+      @media (max-width: 1200px) {
+        .lesson-content {
+          grid-template-columns: 1fr;
         }
-        
-        /* Escher-inspired tessellation background */
-        .escher-bg {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            opacity: 0.06;
-            pointer-events: none;
-        }
-        
-        .escher-bg svg {
-            width: 100%;
-            height: 100%;
-        }
-        
-        /* Impossible staircase decoration */
-        .impossible-stairs {
-            position: fixed;
-            width: 200px;
-            height: 200px;
-            opacity: 0.08;
-            z-index: 0;
-        }
-        
-        .stairs-left {
-            left: 2%;
-            top: 20%;
-            transform: rotate(-15deg);
-        }
-        
-        .stairs-right {
-            right: 2%;
-            bottom: 15%;
-            transform: rotate(15deg) scaleX(-1);
-        }
-        
-        /* Tessellation animation */
-        @keyframes tessellate-drift {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(10px, 10px) rotate(1deg); }
-        }
-        
-        .escher-bg {
-            animation: tessellate-drift 60s ease-in-out infinite;
-        }
-        
-        /* Main content wrapper */
-        .content-wrapper {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid var(--line-subtle);
-            position: relative;
-        }
-        
+
         .header::before,
         .header::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 200px;
-            height: 1px;
-            background: var(--line-subtle);
+          width: 60px;
         }
-        
-        .header::before { left: 0; }
-        .header::after { right: 0; }
-        
-        h1 {
-            font-size: 3.2rem;
-            font-weight: 400;
-            letter-spacing: 0.08em;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-        
-        .subtitle {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-        
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-        
-        .legend-color {
-            width: 12px;
-            height: 12px;
-            clip-path: polygon(3px 0, calc(100% - 3px) 0, 100% 3px, 100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px), 0 3px);
-        }
-        
-        .calendar {
-            display: grid;
-            grid-template-columns: 80px repeat(5, 1fr);
-            gap: 3px;
-            background: var(--line-subtle);
-            border-radius: 0;
-            overflow: hidden;
-            margin-bottom: 3rem;
-            clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
-        }
-        
-        .time-slot {
-            background: var(--bg-deep);
-            padding: 1rem 0.5rem;
-            text-align: right;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            font-variant-numeric: tabular-nums;
-        }
-        
-        .day-header {
-            background: var(--bg-mid);
-            padding: 1rem;
-            text-align: center;
-            font-weight: 600;
-            border-bottom: 2px solid var(--line-subtle);
-            font-size: 1.1rem;
-        }
-        
-        .day-header .date {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            font-weight: 400;
-            margin-top: 0.25rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-        }
-        
-        .day-header .theme {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            color: var(--text-secondary);
-            font-weight: 400;
-            margin-top: 0.5rem;
-            font-style: italic;
-        }
-        
-        .session {
-            padding: 0.75rem;
-            margin: 4px;
-            font-size: 0.85rem;
-            background: var(--node-available);
-            transition: all 0.3s ease;
-            position: relative;
-            clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
-        }
-        
-        .session:hover {
-            transform: translate(-2px, -2px);
-        }
-        
-        .session .lesson-num {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 0.25rem;
-            padding-bottom: 0.35rem;
-            border-bottom: 2px solid var(--accent-color, var(--line-subtle));
-            display: inline-block;
-        }
-        
-        .session .title {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            line-height: 1.3;
-            font-size: 0.95rem;
-        }
-        
-        .session .duration {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            opacity: 0.6;
-        }
-        
-        /* Phase colors - using CSS custom property for the accent bar */
-        .phase-1 { --accent-color: var(--day1); }
-        .phase-2 { --accent-color: var(--day2); }
-        .phase-3 { --accent-color: var(--day3); }
-        .phase-4 { --accent-color: var(--day4); }
-        .phase-5 { --accent-color: var(--day5); }
-        
-        .corner {
-            background: var(--bg-deep);
-        }
-        
-        /* Lesson Details */
-        .lessons-detail {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .phase-section {
-            margin-bottom: 3rem;
-        }
-        
-        .phase-title {
-            font-size: 1.5rem;
-            font-weight: 400;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--line-subtle);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            letter-spacing: 0.02em;
-        }
-        
-        .phase-badge {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            padding: 0.25rem 0.75rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);
-        }
-        
-        .phase-badge.p1 { background: var(--day1); color: #0d0d0f; }
-        .phase-badge.p2 { background: var(--day2); color: #0d0d0f; }
-        .phase-badge.p3 { background: var(--day3); color: #0d0d0f; }
-        .phase-badge.p4 { background: var(--day4); color: #0d0d0f; }
-        .phase-badge.p5 { background: var(--day5); color: #0d0d0f; }
-        
-        .lesson-card {
-            background: var(--bg-mid);
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid var(--line-subtle);
-            position: relative;
-            clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
-        }
-        
 
-        
-        .lesson-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
+        h1 {
+          font-size: 2rem;
         }
-        
-        .lesson-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            letter-spacing: 0.02em;
+      }
+
+      @media (max-width: 768px) {
+        .impossible-stairs {
+          display: none;
         }
-        
-        .lesson-meta {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-align: right;
-            letter-spacing: 0.05em;
+
+        body {
+          padding: 1rem;
         }
-        
-        .lesson-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 2rem;
+
+        h1 {
+          font-size: 1.5rem;
+          letter-spacing: 0.04em;
         }
-        
-        .lecture-section, .exercise-section {
-            padding: 1rem;
-            background: var(--bg-deep);
-            clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+
+        .header::before,
+        .header::after {
+          display: none;
         }
-        
-        .section-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: var(--text-muted);
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+
+        .legend {
+          flex-direction: column;
+          gap: 0.75rem;
+          align-items: flex-start;
         }
-        
-        .section-label .time {
-            background: var(--node-available);
-            padding: 0.15rem 0.5rem;
-            clip-path: polygon(3px 0, calc(100% - 3px) 0, 100% 3px, 100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px), 0 3px);
-            font-variant-numeric: tabular-nums;
-        }
-        
-        ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        
-        li {
-            padding: 0.35rem 0;
-            padding-left: 1.25rem;
-            position: relative;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-        
-        li::before {
-            content: "↳";
-            position: absolute;
-            left: 0;
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-        }
-        
-        .prompt-box {
-            background: var(--node-available);
-            border: 1px solid var(--line-subtle);
-            padding: 1rem;
-            margin-top: 0.75rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
-        }
-        
-        .prompt-label {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--day1);
-            margin-bottom: 0.5rem;
-        }
-        
-        .outcome {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            border-left: 2px solid var(--day1);
-            background: rgba(74, 222, 128, 0.05);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        
-        .outcome strong {
-            color: var(--day1);
-        }
-        
-        @media (max-width: 1200px) {
-            .lesson-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .header::before,
-            .header::after {
-                width: 60px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .impossible-stairs {
-                display: none;
-            }
-            
-            body {
-                padding: 1rem;
-            }
-            
-            h1 {
-                font-size: 1.5rem;
-                letter-spacing: 0.04em;
-            }
-            
-            .header::before,
-            .header::after {
-                display: none;
-            }
-            
-            .legend {
-                flex-direction: column;
-                gap: 0.75rem;
-                align-items: flex-start;
-            }
-            
-            .schedule-note {
-                flex-direction: column;
-                gap: 0.5rem;
-                text-align: left;
-                padding: 1rem;
-            }
-            
-            /* Mobile calendar: stacked card layout */
-            .calendar {
-                display: flex;
-                flex-direction: column;
-                gap: 1.5rem;
-                background: transparent;
-                clip-path: none;
-            }
-            
-            /* Hide corner cell and time slots on mobile */
-            .calendar > .corner,
-            .calendar > .time-slot {
-                display: none;
-            }
-            
-            /* Day headers become section dividers */
-            .calendar > .day-header {
-                background: var(--bg-mid);
-                padding: 1rem;
-                margin-top: 1rem;
-                border-radius: 0;
-                clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
-                text-align: left;
-                border-bottom: none;
-            }
-            
-            .calendar > .day-header:first-of-type {
-                margin-top: 0;
-            }
-            
-            .calendar > .day-header .date,
-            .calendar > .day-header .theme {
-                display: inline;
-                margin: 0;
-            }
-            
-            .calendar > .day-header .date::after {
-                content: " · ";
-            }
-            
-            /* Sessions stack vertically */
-            .calendar > .session {
-                margin: 0.5rem 0;
-                padding: 1rem;
-            }
-            
-            /* Reorder grid items to group by day */
-            /* Day headers: 2nd, 3rd, 4th, 5th, 6th children */
-            .calendar > :nth-child(2) { order: 1; }   /* Day 1 header */
-            .calendar > :nth-child(8) { order: 2; }   /* Day 1 session 1 */
-            .calendar > :nth-child(14) { order: 3; }  /* Day 1 session 2 */
-            .calendar > :nth-child(20) { order: 4; }  /* Day 1 session 3 */
-            
-            .calendar > :nth-child(3) { order: 5; }   /* Day 2 header */
-            .calendar > :nth-child(9) { order: 6; }   /* Day 2 session 1 */
-            .calendar > :nth-child(15) { order: 7; }  /* Day 2 session 2 */
-            .calendar > :nth-child(21) { order: 8; }  /* Day 2 session 3 */
-            
-            .calendar > :nth-child(4) { order: 9; }   /* Day 3 header */
-            .calendar > :nth-child(10) { order: 10; } /* Day 3 session 1 */
-            .calendar > :nth-child(16) { order: 11; } /* Day 3 session 2 */
-            .calendar > :nth-child(22) { order: 12; } /* Day 3 session 3 */
-            
-            .calendar > :nth-child(5) { order: 13; }  /* Day 4 header */
-            .calendar > :nth-child(11) { order: 14; } /* Day 4 session 1 */
-            .calendar > :nth-child(17) { order: 15; } /* Day 4 session 2 */
-            .calendar > :nth-child(23) { order: 16; } /* Day 4 session 3 */
-            
-            .calendar > :nth-child(6) { order: 17; }  /* Day 5 header */
-            .calendar > :nth-child(12) { order: 18; } /* Day 5 session 1 */
-            .calendar > :nth-child(18) { order: 19; } /* Day 5 session 2 */
-            .calendar > :nth-child(24) { order: 20; } /* Day 5 session 3 */
-            
-            .session .title {
-                font-size: 1rem;
-            }
-            
-            .session .duration {
-                font-size: 0.75rem;
-                margin-top: 0.25rem;
-            }
-            
-            /* Lesson cards */
-            .lesson-card {
-                padding: 1rem;
-            }
-            
-            .lesson-header {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            
-            .lesson-meta {
-                text-align: left;
-            }
-            
-            .lesson-title {
-                font-size: 1.1rem;
-            }
-            
-            .phase-title {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-                font-size: 1.2rem;
-            }
-            
-            /* Footer */
-            .footer-stats {
-                gap: 2rem;
-            }
-            
-            .stat-value {
-                font-size: 2rem;
-            }
-        }
-        
-        /* View Toggle */
-        .view-toggle {
-            position: fixed;
-            top: 1.5rem;
-            right: 1.5rem;
-            z-index: 1000;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-mid);
-            border: 1px solid var(--line-subtle);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: var(--text-secondary);
-            clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
-        }
-        
-        .view-toggle:hover {
-            background: var(--node-available);
-            border-color: var(--line-bright);
-            color: var(--text-primary);
-        }
-        
-        .view-toggle svg {
-            width: 18px;
-            height: 18px;
-        }
-        
+
         .schedule-note {
-            text-align: center;
-            color: var(--text-secondary);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            margin-bottom: 2rem;
-            padding: 1rem 1.5rem;
-            background: var(--bg-mid);
-            border: 1px solid var(--line-subtle);
-            display: inline-flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-            clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+          flex-direction: column;
+          gap: 0.5rem;
+          text-align: left;
+          padding: 1rem;
         }
-        
-        .schedule-note-wrapper {
-            text-align: center;
-            margin-bottom: 2rem;
+
+        /* Mobile calendar: stacked card layout */
+        .calendar {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+          background: transparent;
+          clip-path: none;
         }
-        
-        .schedule-note code {
-            background: var(--node-available);
-            padding: 0.2rem 0.5rem;
-            color: var(--day1);
-            clip-path: polygon(3px 0, calc(100% - 3px) 0, 100% 3px, 100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px), 0 3px);
+
+        /* Hide corner cell and time slots on mobile */
+        .calendar > .corner,
+        .calendar > .time-slot {
+          display: none;
         }
-        
+
+        /* Day headers become section dividers */
+        .calendar > .day-header {
+          background: var(--bg-mid);
+          padding: 1rem;
+          margin-top: 1rem;
+          border-radius: 0;
+          clip-path: polygon(
+            8px 0,
+            calc(100% - 8px) 0,
+            100% 8px,
+            100% calc(100% - 8px),
+            calc(100% - 8px) 100%,
+            8px 100%,
+            0 calc(100% - 8px),
+            0 8px
+          );
+          text-align: left;
+          border-bottom: none;
+        }
+
+        .calendar > .day-header:first-of-type {
+          margin-top: 0;
+        }
+
+        .calendar > .day-header .date,
+        .calendar > .day-header .theme {
+          display: inline;
+          margin: 0;
+        }
+
+        .calendar > .day-header .date::after {
+          content: " · ";
+        }
+
+        /* Sessions stack vertically */
+        .calendar > .session {
+          margin: 0.5rem 0;
+          padding: 1rem;
+        }
+
+        /* Reorder grid items to group by day */
+        /* Day headers: 2nd, 3rd, 4th, 5th, 6th children */
+        .calendar > :nth-child(2) {
+          order: 1;
+        } /* Day 1 header */
+        .calendar > :nth-child(8) {
+          order: 2;
+        } /* Day 1 session 1 */
+        .calendar > :nth-child(14) {
+          order: 3;
+        } /* Day 1 session 2 */
+        .calendar > :nth-child(20) {
+          order: 4;
+        } /* Day 1 session 3 */
+
+        .calendar > :nth-child(3) {
+          order: 5;
+        } /* Day 2 header */
+        .calendar > :nth-child(9) {
+          order: 6;
+        } /* Day 2 session 1 */
+        .calendar > :nth-child(15) {
+          order: 7;
+        } /* Day 2 session 2 */
+        .calendar > :nth-child(21) {
+          order: 8;
+        } /* Day 2 session 3 */
+
+        .calendar > :nth-child(4) {
+          order: 9;
+        } /* Day 3 header */
+        .calendar > :nth-child(10) {
+          order: 10;
+        } /* Day 3 session 1 */
+        .calendar > :nth-child(16) {
+          order: 11;
+        } /* Day 3 session 2 */
+        .calendar > :nth-child(22) {
+          order: 12;
+        } /* Day 3 session 3 */
+
+        .calendar > :nth-child(5) {
+          order: 13;
+        } /* Day 4 header */
+        .calendar > :nth-child(11) {
+          order: 14;
+        } /* Day 4 session 1 */
+        .calendar > :nth-child(17) {
+          order: 15;
+        } /* Day 4 session 2 */
+        .calendar > :nth-child(23) {
+          order: 16;
+        } /* Day 4 session 3 */
+
+        .calendar > :nth-child(6) {
+          order: 17;
+        } /* Day 5 header */
+        .calendar > :nth-child(12) {
+          order: 18;
+        } /* Day 5 session 1 */
+        .calendar > :nth-child(18) {
+          order: 19;
+        } /* Day 5 session 2 */
+        .calendar > :nth-child(24) {
+          order: 20;
+        } /* Day 5 session 3 */
+
+        .session .title {
+          font-size: 1rem;
+        }
+
+        .session .duration {
+          font-size: 0.75rem;
+          margin-top: 0.25rem;
+        }
+
+        /* Lesson cards */
+        .lesson-card {
+          padding: 1rem;
+        }
+
+        .lesson-header {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .lesson-meta {
+          text-align: left;
+        }
+
+        .lesson-title {
+          font-size: 1.1rem;
+        }
+
+        .phase-title {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
+          font-size: 1.2rem;
+        }
+
         /* Footer */
-        .footer {
-            text-align: center;
-            padding: 3rem 0;
-            margin-top: 2rem;
-            border-top: 1px solid var(--line-subtle);
-        }
-        
         .footer-stats {
-            display: flex;
-            justify-content: center;
-            gap: 5rem;
-            margin-bottom: 1.5rem;
+          gap: 2rem;
         }
-        
-        .stat {
-            text-align: center;
-        }
-        
+
         .stat-value {
-            font-size: 2.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
+          font-size: 2rem;
         }
-        
-        .stat-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-        
-        .footer-note {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
+      }
+
+      /* View Toggle */
+      .view-toggle {
+        position: fixed;
+        top: 1.5rem;
+        right: 1.5rem;
+        z-index: 1000;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-mid);
+        border: 1px solid var(--line-subtle);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: var(--text-secondary);
+        clip-path: polygon(
+          6px 0,
+          calc(100% - 6px) 0,
+          100% 6px,
+          100% calc(100% - 6px),
+          calc(100% - 6px) 100%,
+          6px 100%,
+          0 calc(100% - 6px),
+          0 6px
+        );
+      }
+
+      .view-toggle:hover {
+        background: var(--node-available);
+        border-color: var(--line-bright);
+        color: var(--text-primary);
+      }
+
+      .view-toggle svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .schedule-note {
+        text-align: center;
+        color: var(--text-secondary);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8rem;
+        margin-bottom: 2rem;
+        padding: 1rem 1.5rem;
+        background: var(--bg-mid);
+        border: 1px solid var(--line-subtle);
+        display: inline-flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        clip-path: polygon(
+          8px 0,
+          calc(100% - 8px) 0,
+          100% 8px,
+          100% calc(100% - 8px),
+          calc(100% - 8px) 100%,
+          8px 100%,
+          0 calc(100% - 8px),
+          0 8px
+        );
+      }
+
+      .schedule-note-wrapper {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .schedule-note code {
+        background: var(--node-available);
+        padding: 0.2rem 0.5rem;
+        color: var(--day1);
+        clip-path: polygon(
+          3px 0,
+          calc(100% - 3px) 0,
+          100% 3px,
+          100% calc(100% - 3px),
+          calc(100% - 3px) 100%,
+          3px 100%,
+          0 calc(100% - 3px),
+          0 3px
+        );
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        padding: 3rem 0;
+        margin-top: 2rem;
+        border-top: 1px solid var(--line-subtle);
+      }
+
+      .footer-stats {
+        display: flex;
+        justify-content: center;
+        gap: 5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .stat {
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .stat-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.75rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      .footer-note {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Escher tessellation background -->
     <div class="escher-bg">
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <pattern id="escher-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-                    <!-- Interlocking impossible triangles -->
-                    <path d="M50 10 L90 80 L10 80 Z" fill="none" stroke="currentColor" stroke-width="0.5"/>
-                    <path d="M50 90 L10 20 L90 20 Z" fill="none" stroke="currentColor" stroke-width="0.5"/>
-                    <!-- Hexagonal tessellation hints -->
-                    <path d="M25 25 L50 10 L75 25 L75 50 L50 65 L25 50 Z" fill="none" stroke="currentColor" stroke-width="0.3"/>
-                    <path d="M0 50 L25 35 L25 65 L0 80" fill="none" stroke="currentColor" stroke-width="0.3"/>
-                    <path d="M100 50 L75 35 L75 65 L100 80" fill="none" stroke="currentColor" stroke-width="0.3"/>
-                </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#escher-pattern)"/>
-        </svg>
+      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern
+            id="escher-pattern"
+            x="0"
+            y="0"
+            width="100"
+            height="100"
+            patternUnits="userSpaceOnUse"
+          >
+            <!-- Interlocking impossible triangles -->
+            <path
+              d="M50 10 L90 80 L10 80 Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="0.5"
+            />
+            <path
+              d="M50 90 L10 20 L90 20 Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="0.5"
+            />
+            <!-- Hexagonal tessellation hints -->
+            <path
+              d="M25 25 L50 10 L75 25 L75 50 L50 65 L25 50 Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="0.3"
+            />
+            <path
+              d="M0 50 L25 35 L25 65 L0 80"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="0.3"
+            />
+            <path
+              d="M100 50 L75 35 L75 65 L100 80"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="0.3"
+            />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#escher-pattern)" />
+      </svg>
     </div>
-    
+
     <!-- Impossible stairs decorations -->
     <div class="impossible-stairs stairs-left">
-        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1">
-            <path d="M20 80 L20 60 L35 60 L35 45 L50 45 L50 30 L65 30 L65 15 L80 15 L80 35 L65 35 L65 50 L50 50 L50 65 L35 65 L35 80 Z"/>
-            <path d="M20 80 L80 80 L80 35"/>
-            <path d="M35 80 L35 65 L50 65 L50 50 L65 50 L65 35 L80 35"/>
-        </svg>
+      <svg
+        viewBox="0 0 100 100"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1"
+      >
+        <path
+          d="M20 80 L20 60 L35 60 L35 45 L50 45 L50 30 L65 30 L65 15 L80 15 L80 35 L65 35 L65 50 L50 50 L50 65 L35 65 L35 80 Z"
+        />
+        <path d="M20 80 L80 80 L80 35" />
+        <path d="M35 80 L35 65 L50 65 L50 50 L65 50 L65 35 L80 35" />
+      </svg>
     </div>
-    
+
     <div class="impossible-stairs stairs-right">
-        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1">
-            <path d="M20 80 L20 60 L35 60 L35 45 L50 45 L50 30 L65 30 L65 15 L80 15 L80 35 L65 35 L65 50 L50 50 L50 65 L35 65 L35 80 Z"/>
-            <path d="M20 80 L80 80 L80 35"/>
-            <path d="M35 80 L35 65 L50 65 L50 50 L65 50 L65 35 L80 35"/>
-        </svg>
+      <svg
+        viewBox="0 0 100 100"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1"
+      >
+        <path
+          d="M20 80 L20 60 L35 60 L35 45 L50 45 L50 30 L65 30 L65 15 L80 15 L80 35 L65 35 L65 50 L50 50 L50 65 L35 65 L35 80 Z"
+        />
+        <path d="M20 80 L80 80 L80 35" />
+        <path d="M35 80 L35 65 L50 65 L50 50 L65 50 L65 35 L80 35" />
+      </svg>
     </div>
-    
+
     <!-- View Toggle Button -->
-    <a href="ai-adoption-skill-tree.html" class="view-toggle" id="viewToggle" title="Skill Tree View">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="5" r="3"/>
-            <line x1="12" y1="8" x2="12" y2="12"/>
-            <circle cx="6" cy="17" r="3"/>
-            <circle cx="18" cy="17" r="3"/>
-            <line x1="12" y1="12" x2="6" y2="14"/>
-            <line x1="12" y1="12" x2="18" y2="14"/>
-        </svg>
+    <a
+      href="ai-adoption-skill-tree.html"
+      class="view-toggle"
+      id="viewToggle"
+      title="Skill Tree View"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <circle cx="12" cy="5" r="3" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <circle cx="6" cy="17" r="3" />
+        <circle cx="18" cy="17" r="3" />
+        <line x1="12" y1="12" x2="6" y2="14" />
+        <line x1="12" y1="12" x2="18" y2="14" />
+      </svg>
     </a>
-    
+
     <div class="content-wrapper">
-        <div class="header">
-            <h1>AI for Programmers</h1>
-            <p class="subtitle">A 5-Day Hands-On Training Course for the AI-Curious (and AI-Skeptical)</p>
+      <div class="header">
+        <h1>AI for Programmers</h1>
+        <p class="subtitle">
+          A 5-Day Hands-On Training Course for the AI-Curious (and AI-Skeptical)
+        </p>
+      </div>
+
+      <div class="schedule-note-wrapper">
+        <div class="schedule-note">
+          <span
+            ><strong>Schedule:</strong>
+            <code>9:00 AM – 1:00 PM</code> daily</span
+          >
+          <span
+            ><strong>Format:</strong> <code>20 min lecture</code> +
+            <code>1 hour exercise</code></span
+          >
+          <span><strong>3 sessions per day</strong></span>
         </div>
-        
-        <div class="schedule-note-wrapper">
-            <div class="schedule-note">
-                <span><strong>Schedule:</strong> <code>9:00 AM – 1:00 PM</code> daily</span>
-                <span><strong>Format:</strong> <code>20 min lecture</code> + <code>1 hour exercise</code></span>
-                <span><strong>3 sessions per day</strong></span>
-            </div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-color" style="background: var(--day1)"></div>
+          <span>Day 1: Quick Wins</span>
         </div>
-        
-        <div class="legend">
-            <div class="legend-item">
-                <div class="legend-color" style="background: var(--day1);"></div>
-                <span>Day 1: Quick Wins</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: var(--day2);"></div>
-                <span>Day 2: Frameworks & Constraints</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: var(--day3);"></div>
-                <span>Day 3: Workflow Integration</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: var(--day4);"></div>
-                <span>Day 4: Advanced Patterns</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: var(--day5);"></div>
-                <span>Day 5: Strategy & Capstone</span>
-            </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: var(--day2)"></div>
+          <span>Day 2: Frameworks & Constraints</span>
         </div>
-        
-        <!-- CALENDAR VIEW -->
-        <div class="calendar">
-            <!-- Header Row -->
-            <div class="corner"></div>
-            <div class="day-header">
-                Monday
-                <div class="date">Day 1</div>
-                <div class="theme">Quick Wins</div>
-            </div>
-            <div class="day-header">
-                Tuesday
-                <div class="date">Day 2</div>
-                <div class="theme">Frameworks & Constraints</div>
-            </div>
-            <div class="day-header">
-                Wednesday
-                <div class="date">Day 3</div>
-                <div class="theme">Workflow Integration</div>
-            </div>
-            <div class="day-header">
-                Thursday
-                <div class="date">Day 4</div>
-                <div class="theme">Advanced Patterns</div>
-            </div>
-            <div class="day-header">
-                Friday
-                <div class="date">Day 5</div>
-                <div class="theme">Strategy & Capstone</div>
-            </div>
-            
-            <!-- 9:00 - 10:20 -->
-            <div class="time-slot">9:00<br>—<br>10:20</div>
-            <div class="session phase-1">
-                <div class="lesson-num">Lesson 1</div>
-                <div class="title">Quick Wins & Setup</div>
-                <div class="duration">Tool Setup + Initial Prompt</div>
-            </div>
-            <div class="session phase-2">
-                <div class="lesson-num">Lesson 4</div>
-                <div class="title">Working Within the Framework</div>
-                <div class="duration">Game engines, Godot, structured environments</div>
-            </div>
-            <div class="session phase-3">
-                <div class="lesson-num">Lesson 7</div>
-                <div class="title">Code Review & Documentation</div>
-                <div class="duration">Pre-PR checks & auto-docs</div>
-            </div>
-            <div class="session phase-4">
-                <div class="lesson-num">Lesson 9</div>
-                <div class="title">AI-Assisted Refactoring</div>
-                <div class="duration">Modernizing legacy patterns</div>
-            </div>
-            <div class="session phase-5">
-                <div class="lesson-num">Lesson 12</div>
-                <div class="title">When AI Fails + Security</div>
-                <div class="duration">Limits, verification & privacy</div>
-            </div>
-            
-            <!-- 10:30 - 11:50 -->
-            <div class="time-slot">10:30<br>—<br>11:50</div>
-            <div class="session phase-1">
-                <div class="lesson-num">Lesson 2</div>
-                <div class="title">Code Explanation & Learning</div>
-                <div class="duration">Understanding unfamiliar code fast</div>
-            </div>
-            <div class="session phase-2">
-                <div class="lesson-num">Lesson 5</div>
-                <div class="title">With Framework vs. Without</div>
-                <div class="duration">Overconstraining AI — when it helps vs. hurts</div>
-            </div>
-            <div class="session phase-3">
-                <div class="lesson-num">Lesson 8</div>
-                <div class="title">LLMs in Your CI Pipeline</div>
-                <div class="duration">Automated code review with AI</div>
-            </div>
-            <div class="session phase-4">
-                <div class="lesson-num">Lesson 10</div>
-                <div class="title">Cross-Language & "Not My Stack"</div>
-                <div class="duration">Translation & bridging knowledge gaps</div>
-            </div>
-            <div class="session phase-5">
-                <div class="lesson-num">Lesson 13</div>
-                <div class="title">Team Adoption Strategies</div>
-                <div class="duration">Rolling out AI to skeptics</div>
-            </div>
-            
-            <!-- 12:00 - 1:00 (condensed session) -->
-            <div class="time-slot">11:50<br>—<br>1:00</div>
-            <div class="session phase-1">
-                <div class="lesson-num">Lesson 3</div>
-                <div class="title">Context Engineering</div>
-                <div class="duration">Getting consistent, quality output</div>
-            </div>
-            <div class="session phase-2">
-                <div class="lesson-num">Lesson 6</div>
-                <div class="title">Generating Code We Can Examine</div>
-                <div class="duration">Python CLI tool with types & tests</div>
-            </div>
-            <div class="session phase-3">
-                <div class="lesson-num">—</div>
-                <div class="title">Open Lab / Catch-up</div>
-                <div class="duration">Practice & Q&A</div>
-            </div>
-            <div class="session phase-4">
-                <div class="lesson-num">Lesson 11</div>
-                <div class="title">API Integration & Pipelines</div>
-                <div class="duration">Scripting & chaining prompts</div>
-            </div>
-            <div class="session phase-5">
-                <div class="lesson-num">Lesson 14</div>
-                <div class="title">Capstone Project</div>
-                <div class="duration">Build something real</div>
-            </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: var(--day3)"></div>
+          <span>Day 3: Workflow Integration</span>
         </div>
-        
-        <!-- DETAILED LESSON BREAKDOWN -->
-        <div class="lessons-detail">
-            
-            <!-- DAY 1 -->
-            <div class="phase-section">
-                <h2 class="phase-title">
-                    <span class="phase-badge p1">Day 1</span>
-                    Quick Wins — Building Trust Through Immediate Value
-                </h2>
-                
-                <div class="lesson-card">
-                    <div class="lesson-header">
-                        <div>
-                            <div class="lesson-title">Lesson 1: Quick Wins & Setup</div>
-                        </div>
-                        <div class="lesson-meta">Day 1 • 9:00 AM<br>1hr 20min</div>
-                    </div>
-                    <div class="lesson-content">
-                        <div class="lecture-section">
-                            <div class="section-label"><span class="time">20 min</span> Lecture</div>
-                            <ul>
-                                <li>Why regex, git, and error messages are perfect entry points</li>
-                                <li>The psychology of "low stakes" AI interactions</li>
-                                <li>Tool landscape: ChatGPT vs Claude vs Copilot vs local models</li>
-                                <li>Understanding output variance — AI is probabilistic, not deterministic</li>
-                                <li>Live demo: Same prompt, different outputs across tools</li>
-                            </ul>
-                        </div>
-                        <div class="exercise-section">
-                            <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
-                            <ul>
-                                <li><strong>Setup:</strong> Everyone creates accounts on 2+ AI tools</li>
-                                <li><strong>Task 1:</strong> Generate 5 regex patterns you've struggled with before</li>
-                                <li><strong>Task 2:</strong> Use AI to explain a cryptic git reflog situation</li>
-                                <li><strong>Task 3:</strong> Feed it your worst error message from the past month</li>
-                                <li><strong>Task 4:</strong> Run same prompt on different tools — compare results</li>
-                                <li><strong>Discussion:</strong> Share your best output with the group</li>
-                            </ul>
-                            <div class="prompt-box">
-                                <div class="prompt-label">Starter Prompt</div>
-                                "Write a regex that matches [your specific case]. Explain each part of the pattern and give me 5 test cases that should match and 5 that shouldn't."
-                            </div>
-                            <div class="outcome"><strong>Outcome:</strong> 4+ concrete wins to use tomorrow + understanding of tool differences</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="lesson-card">
-                    <div class="lesson-header">
-                        <div>
-                            <div class="lesson-title">Lesson 2: Code Explanation & Learning</div>
-                        </div>
-                        <div class="lesson-meta">Day 1 • 10:30 AM<br>1hr 20min</div>
-                    </div>
-                    <div class="lesson-content">
-                        <div class="lecture-section">
-                            <div class="section-label"><span class="time">20 min</span> Lecture</div>
-                            <ul>
-                                <li>The safest AI use case: asking questions costs nothing</li>
-                                <li>"What does this do?" — the zero-risk starting point</li>
-                                <li>Reading unfamiliar languages, frameworks, and patterns</li>
-                                <li>Demo: Explaining a gnarly piece of code in 60 seconds</li>
-                            </ul>
-                        </div>
-                        <div class="exercise-section">
-                            <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
-                            <ul>
-                                <li><strong>Task 1:</strong> Find code you've never understood — get it explained</li>
-                                <li><strong>Task 2:</strong> Paste code in a language you don't know — learn what it does</li>
-                                <li><strong>Task 3:</strong> Ask "why was it written this way?" on a confusing pattern</li>
-                                <li><strong>Task 4:</strong> Get a line-by-line breakdown of a complex function</li>
-                            </ul>
-                            <div class="prompt-box">
-                                <div class="prompt-label">Starter Prompt</div>
-                                "Explain this code like I'm a developer who's never seen this language/framework before. What does it do, and why might someone write it this way?"
-                            </div>
-                            <div class="outcome"><strong>Outcome:</strong> Confidence to explore any codebase without fear</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="lesson-card">
-                    <div class="lesson-header">
-                        <div>
-                            <div class="lesson-title">Lesson 3: Context Engineering</div>
-                        </div>
-                        <div class="lesson-meta">Day 1 • 11:50 AM<br>1hr 10min</div>
-                    </div>
-                    <div class="lesson-content">
-                        <div class="lecture-section">
-                            <div class="section-label"><span class="time">20 min</span> Lecture</div>
-                            <ul>
-                                <li>Why prompt quality determines output quality</li>
-                                <li>Core patterns: role, context, task, format, examples</li>
-                                <li>Iteration strategies: refining prompts systematically</li>
-                                <li>The "prompt library" concept</li>
-                            </ul>
-                        </div>
-                        <div class="exercise-section">
-                            <div class="section-label"><span class="time">50 min</span> Exercise (includes breaks)</div>
-                            <ul>
-                                <li><strong>Task 1:</strong> Transform a vague prompt into a precise one</li>
-                                <li><strong>Task 2:</strong> Use few-shot examples to control output format</li>
-                                <li><strong>Task 3:</strong> Create a reusable prompt template</li>
-                                <li><strong>Group work:</strong> Build a shared prompt library for common tasks</li>
-                            </ul>
-                            <div class="prompt-box">
-                                <div class="prompt-label">Template Pattern</div>
-                                "You are a [role]. Given [context], your task is to [specific action]. Output should be [format]. Here's an example: [example]."
-                            </div>
-                            <div class="outcome"><strong>Outcome:</strong> Personal prompt library with 10+ reusable templates</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- DAY 2 -->
-            <div class="phase-section">
-                <h2 class="phase-title">
-                    <span class="phase-badge p2">Day 2</span>
-                    Frameworks & Constraints — When Structure Helps (and Hurts)
-                </h2>
-                
-                <div class="lesson-card">
-                    <div class="lesson-header">
-                        <div>
-                            <div class="lesson-title">Lesson 4: Working Within the Framework</div>
-                        </div>
-                        <div class="lesson-meta">Day 2 • 9:00 AM<br>1hr 20min</div>
-                    </div>
-                    <div class="lesson-content">
-                        <div class="lecture-section">
-                            <div class="section-label"><span class="time">20 min</span> Lecture</div>
-                            <ul>
-                                <li>Why frameworks are AI's comfort zone</li>
-                                <li>Game engines (Godot, Unity, Unreal) as structured environments</li>
-                                <li>How AI leverages patterns, conventions, and documentation</li>
-                                <li>Demo: Building a game mechanic in Godot with AI</li>
-                            </ul>
-                        </div>
-                        <div class="exercise-section">
-                            <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
-                            <ul>
-                                <li><strong>Task 1:</strong> Generate a player controller script in Godot/Unity</li>
-                                <li><strong>Task 2:</strong> Ask AI to implement a game mechanic (inventory, combat, etc.)</li>
-                                <li><strong>Task 3:</strong> Debug framework-specific errors with AI assistance</li>
-                                <li><strong>Task 4:</strong> Compare output quality when you specify the framework vs. generic request</li>
-                            </ul>
-                            <div class="prompt-box">
-                                <div class="prompt-label">Framework-Aware Prompt</div>
-                                "In Godot 4 using GDScript, create a 2D player controller with: WASD movement, jump with coyote time, and animation state machine. Use CharacterBody2D."
-                            </div>
-                            <div class="outcome"><strong>Outcome:</strong> Understanding that framework context dramatically improves AI output</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="lesson-card">
-                    <div class="lesson-header">
-                        <div>
-                            <div class="lesson-title">Lesson 5: With Framework vs. Without — Overconstraining AI</div>
-                        </div>
-                        <div class="lesson-meta">Day 2 • 10:30 AM<br>1hr 20min</div>
-                    </div>
-                    <div class="lesson-content">
-                        <div class="lecture-section">
-                            <div class="section-label"><span class="time">20 min</span> Lecture</div>
-                            <ul>
-                                <li>The constraint spectrum: too little vs. too much guidance</li>
-                                <li>Case study: React/Vue website vs. vanilla HTML/CSS/JS</li>
-                                <li>When frameworks help AI (patterns, conventions, examples)</li>
-                                <li>When frameworks hurt AI (outdated training, niche APIs, version conflicts)</li>
-                            </ul>
-                        </div>
-                        <div class="exercise-section">
-                            <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
-                            <ul>
-                                <li><strong>Task 1:</strong> Build the same component in React AND vanilla JS — compare results</li>
-                                <li><strong>Task 2:</strong> Intentionally overconstrain: specify framework + version + obscure library</li>
-                                <li><strong>Task 3:</strong> Intentionally underconstrain: "build me a website" with no guidance</li>
-                                <li><strong>Discussion:</strong> When did constraints help? When did they create problems?</li>
-                            </ul>
-                            <div class="prompt-box">
-                                <div class="prompt-label">Experiment Prompts</div>
-                                <strong>Overconstrained:</strong> "Using React 18.3 with Zustand 4.5, React Query 5, and Radix UI, build a..."<br><br>
-                                <strong>Underconstrained:</strong> "Build me a todo app"<br><br>
-                                <strong>Balanced:</strong> "Build a todo app in React with state management. I'm flexible on libraries."
-                            </div>
-                            <div class="outcome"><strong>Outcome:</strong> Intuition for when to specify frameworks vs. let AI choose</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="lesson-card">
-                    <div class="lesson-header">
-                        <div>
-                            <div class="lesson-title">Lesson 6: Generating Code We Can Examine</div>
-                        </div>
-                        <div class="lesson-meta">Day 2 • 11:50 AM<br>1hr 10min</div>
-                    </div>
-                    <div class="lesson-content">
-                        <div class="lecture-section">
-                            <div class="section-label"><span class="time">20 min</span> Lecture</div>
-                            <ul>
-                                <li>The "trust but verify" mindset — you MUST read the code</li>
-                                <li>Why type annotations matter for AI-generated code</li>
-                                <li>Testing as a verification mechanism</li>
-                                <li>Demo: Python CLI tool with full type hints, tests, and documentation</li>
-                            </ul>
-                        </div>
-                        <div class="exercise-section">
-                            <div class="section-label"><span class="time">50 min</span> Exercise (includes breaks)</div>
-                            <ul>
-                                <li><strong>Project:</strong> Build a Python CLI tool from scratch with AI</li>
-                                <li><strong>Requirements:</strong> argparse/click, type annotations, pytest tests, docstrings</li>
-                                <li><strong>Task 1:</strong> Generate the initial structure</li>
-                                <li><strong>Task 2:</strong> Read every line — find at least 2 things you'd change</li>
-                                <li><strong>Task 3:</strong> Run the tests — do they actually test the right things?</li>
-                                <li><strong>Task 4:</strong> Refactor one function based on your review</li>
-                            </ul>
-                            <div class="prompt-box">
-                                <div class="prompt-label">Project Prompt</div>
-                                "Create a Python CLI tool that [your choice: converts files, fetches data, generates reports, etc.]. Include: click for CLI, full type annotations, pytest tests with >80% coverage, and Google-style docstrings. Structure as a proper package with pyproject.toml."
-                            </div>
-                            <div class="outcome"><strong>Outcome:</strong> Habit of examining AI code critically + a working CLI tool to take home</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- DAY 3 -->
-            <div class="phase-section">
-                <h2 class="phase-title">
-                    <span class="phase-badge p3">Day 3</span>
-                    Workflow Integration — Making AI Invisible
-                </h2>
-                
-                <div class="lesson-card">
-                    <div class="lesson-header">
-                        <div>
-                            <div class="lesson-title">Lesson 7: Code Review & Documentation</div>
-                        </div>
-                        <div class="lesson-meta">Day 3 • 9:00 AM<br>1hr 20min</div>
-                    </div>
-                    <div class="lesson-content">
-                        <div class="lecture-section">
-                            <div class="section-label"><span class="time">20 min</span> Lecture</div>
-                            <ul>
-                                <li>Pre-PR self-review: catching issues before teammates do</li>
-                                <li>Security vulnerability patterns AI can spot</li>
-                                <li>Documentation debt: the silent productivity killer</li>
-                                <li>Demo: Review + document a module in 10 minutes</li>
-                            </ul>
-                        </div>
-                        <div class="exercise-section">
-                            <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
-                            <ul>
-                                <li><strong>Task 1:</strong> Review your own recent PR with AI</li>
-                                <li><strong>Task 2:</strong> Scan code for security issues</li>
-                                <li><strong>Task 3:</strong> Generate README for an existing project</li>
-                                <li><strong>Task 4:</strong> Add docstrings to undocumented functions</li>
-                            </ul>
-                            <div class="outcome"><strong>Outcome:</strong> Pre-PR checklist that catches 90% of review comments</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="lesson-card">
-                    <div class="lesson-header">
-                        <div>
-                            <div class="lesson-title">Lesson 8: LLMs in Your CI Pipeline</div>
-                        </div>
-                        <div class="lesson-meta">Day 3 • 10:30 AM<br>1hr 20min</div>
-                    </div>
-                    <div class="lesson-content">
-                        <div class="lecture-section">
-                            <div class="section-label"><span class="time">20 min</span> Lecture</div>
-                            <ul>
-                                <li>Why automated code review matters: catching issues before humans review</li>
-                                <li>Architecture: GitHub Actions, GitLab CI, or webhooks + LLM APIs</li>
-                                <li>What LLMs can catch: security issues, style violations, logic errors, missing tests</li>
-                                <li>Demo: A GitHub Action that reviews PRs with Claude/GPT</li>
-                            </ul>
-                        </div>
-                        <div class="exercise-section">
-                            <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
-                            <ul>
-                                <li><strong>Task 1:</strong> Set up a GitHub Action that calls an LLM API on PR diffs</li>
-                                <li><strong>Task 2:</strong> Craft a system prompt optimized for code review (security, style, bugs)</li>
-                                <li><strong>Task 3:</strong> Handle context limits: chunking large PRs, summarizing files</li>
-                                <li><strong>Task 4:</strong> Post review comments back to the PR automatically</li>
-                            </ul>
-                            <div class="prompt-box">
-                                <div class="prompt-label">CI Review Prompt Template</div>
-                                "You are a senior code reviewer. Analyze this diff for: 1) Security vulnerabilities, 2) Logic errors, 3) Performance issues, 4) Missing error handling. Be specific with line numbers. Only flag real issues—no nitpicks."
-                            </div>
-                            <div class="outcome"><strong>Outcome:</strong> A working CI pipeline that reviews every PR with AI before human review</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="lesson-card">
-                    <div class="lesson-header">
-                        <div>
-                            <div class="lesson-title">Open Lab / Catch-up Session</div>
-                        </div>
-                        <div class="lesson-meta">Day 3 • 11:50 AM<br>1hr 10min</div>
-                    </div>
-                    <div class="lesson-content">
-                        <div class="lecture-section">
-                            <div class="section-label"><span class="time">10 min</span> Quick Recap</div>
-                            <ul>
-                                <li>Review key concepts from Days 1-3</li>
-                                <li>Address common questions and stumbling blocks</li>
-                                <li>Share wins and breakthroughs from the group</li>
-                            </ul>
-                        </div>
-                        <div class="exercise-section">
-                            <div class="section-label"><span class="time">60 min</span> Open Practice</div>
-                            <ul>
-                                <li><strong>Option A:</strong> Catch up on any exercises from earlier lessons</li>
-                                <li><strong>Option B:</strong> Apply techniques to your own real work project</li>
-                                <li><strong>Option C:</strong> Pair with a colleague to tackle a shared challenge</li>
-                                <li><strong>Option D:</strong> Experiment with advanced prompt techniques</li>
-                                <li><strong>1:1 Support:</strong> Instructor available for individual questions</li>
-                            </ul>
-                            <div class="outcome"><strong>Outcome:</strong> Consolidate learning before moving to advanced patterns</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- DAY 4 -->
-            <div class="phase-section">
-                <h2 class="phase-title">
-                    <span class="phase-badge p4">Day 4</span>
-                    Advanced Patterns — Power User Techniques
-                </h2>
-                
-                <div class="lesson-card">
-                    <div class="lesson-header">
-                        <div>
-                            <div class="lesson-title">Lesson 9: AI-Assisted Refactoring</div>
-                        </div>
-                        <div class="lesson-meta">Day 4 • 9:00 AM<br>1hr 20min</div>
-                    </div>
-                    <div class="lesson-content">
-                        <div class="lecture-section">
-                            <div class="section-label"><span class="time">20 min</span> Lecture</div>
-                            <ul>
-                                <li>Refactoring patterns AI handles well</li>
-                                <li>Modernizing legacy code safely</li>
-                                <li>Extracting functions, classes, modules</li>
-                                <li>Demo: Refactor a 500-line function</li>
-                            </ul>
-                        </div>
-                        <div class="exercise-section">
-                            <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
-                            <ul>
-                                <li><strong>Task 1:</strong> Convert callback hell to async/await</li>
-                                <li><strong>Task 2:</strong> Extract a god class into smaller components</li>
-                                <li><strong>Task 3:</strong> Modernize old API usage patterns</li>
-                                <li><strong>Task 4:</strong> Add types to untyped JavaScript</li>
-                            </ul>
-                            <div class="outcome"><strong>Outcome:</strong> Refactoring playbook for common legacy patterns</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="lesson-card">
-                    <div class="lesson-header">
-                        <div>
-                            <div class="lesson-title">Lesson 10: Cross-Language & "Not My Stack"</div>
-                        </div>
-                        <div class="lesson-meta">Day 4 • 10:30 AM<br>1hr 20min</div>
-                    </div>
-                    <div class="lesson-content">
-                        <div class="lecture-section">
-                            <div class="section-label"><span class="time">20 min</span> Lecture</div>
-                            <ul>
-                                <li>When and why to translate code between languages</li>
-                                <li>Preserving idioms vs. literal translation</li>
-                                <li>Frontend for backend devs, backend for frontend devs</li>
-                                <li>Demo: Python → Rust with proper error handling</li>
-                            </ul>
-                        </div>
-                        <div class="exercise-section">
-                            <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
-                            <ul>
-                                <li><strong>Task 1:</strong> Port a script to a new language</li>
-                                <li><strong>Task 2:</strong> Build something in your weak area</li>
-                                <li><strong>Task 3:</strong> Fix a CSS layout (backend devs) / write SQL (frontend devs)</li>
-                                <li><strong>Pair work:</strong> Each person tackles the other's specialty</li>
-                            </ul>
-                            <div class="outcome"><strong>Outcome:</strong> Reduced fear of "not my area" tasks</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="lesson-card">
-                    <div class="lesson-header">
-                        <div>
-                            <div class="lesson-title">Lesson 11: API Integration & Pipelines</div>
-                        </div>
-                        <div class="lesson-meta">Day 4 • 11:50 AM<br>1hr 10min</div>
-                    </div>
-                    <div class="lesson-content">
-                        <div class="lecture-section">
-                            <div class="section-label"><span class="time">20 min</span> Lecture</div>
-                            <ul>
-                                <li>Using AI APIs programmatically (OpenAI, Anthropic, etc.)</li>
-                                <li>Chaining prompts for complex tasks</li>
-                                <li>Building AI-powered scripts and tools</li>
-                                <li>Demo: Build a custom AI-powered CLI tool</li>
-                            </ul>
-                        </div>
-                        <div class="exercise-section">
-                            <div class="section-label"><span class="time">50 min</span> Exercise (includes breaks)</div>
-                            <ul>
-                                <li><strong>Task 1:</strong> Write a script that calls an AI API</li>
-                                <li><strong>Task 2:</strong> Build a git hook that uses AI</li>
-                                <li><strong>Task 3:</strong> Chain 3+ prompts to solve a complex problem</li>
-                                <li><strong>Challenge:</strong> Create a self-improving prompt chain</li>
-                            </ul>
-                            <div class="outcome"><strong>Outcome:</strong> A custom AI-powered tool you'll actually use</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- DAY 5 -->
-            <div class="phase-section">
-                <h2 class="phase-title">
-                    <span class="phase-badge p5">Day 5</span>
-                    Strategy & Capstone — Making It Stick
-                </h2>
-                
-                <div class="lesson-card">
-                    <div class="lesson-header">
-                        <div>
-                            <div class="lesson-title">Lesson 12: When AI Fails + Security</div>
-                        </div>
-                        <div class="lesson-meta">Day 5 • 9:00 AM<br>1hr 20min</div>
-                    </div>
-                    <div class="lesson-content">
-                        <div class="lecture-section">
-                            <div class="section-label"><span class="time">20 min</span> Lecture</div>
-                            <ul>
-                                <li>Recognizing AI limitations and hallucinations</li>
-                                <li>Tasks AI consistently struggles with</li>
-                                <li>What goes to the AI (and what stays local)</li>
-                                <li>Company policies, compliance, and sanitization</li>
-                            </ul>
-                        </div>
-                        <div class="exercise-section">
-                            <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
-                            <ul>
-                                <li><strong>Task 1:</strong> Intentionally break AI with hard problems</li>
-                                <li><strong>Task 2:</strong> Spot hallucinations in generated code</li>
-                                <li><strong>Task 3:</strong> Audit what you've shared with AI this week</li>
-                                <li><strong>Group work:</strong> Draft team AI usage guidelines</li>
-                            </ul>
-                            <div class="outcome"><strong>Outcome:</strong> Healthy skepticism + clear policy for safe AI usage</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="lesson-card">
-                    <div class="lesson-header">
-                        <div>
-                            <div class="lesson-title">Lesson 13: Team Adoption Strategies</div>
-                        </div>
-                        <div class="lesson-meta">Day 5 • 10:30 AM<br>1hr 20min</div>
-                    </div>
-                    <div class="lesson-content">
-                        <div class="lecture-section">
-                            <div class="section-label"><span class="time">20 min</span> Lecture</div>
-                            <ul>
-                                <li>Rolling out AI to skeptical teammates</li>
-                                <li>Measuring productivity impact</li>
-                                <li>Handling resistance and concerns</li>
-                                <li>Building an AI champions program</li>
-                            </ul>
-                        </div>
-                        <div class="exercise-section">
-                            <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
-                            <ul>
-                                <li><strong>Task 1:</strong> Create a 5-minute demo for skeptical colleagues</li>
-                                <li><strong>Task 2:</strong> Draft a team adoption proposal</li>
-                                <li><strong>Task 3:</strong> Design metrics to track AI impact</li>
-                                <li><strong>Role-play:</strong> Practice handling objections</li>
-                            </ul>
-                            <div class="outcome"><strong>Outcome:</strong> Adoption toolkit to bring back to your team</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="lesson-card">
-                    <div class="lesson-header">
-                        <div>
-                            <div class="lesson-title">Lesson 14: Capstone Project</div>
-                        </div>
-                        <div class="lesson-meta">Day 5 • 11:50 AM<br>1hr 10min</div>
-                    </div>
-                    <div class="lesson-content">
-                        <div class="lecture-section">
-                            <div class="section-label"><span class="time">20 min</span> Kickoff</div>
-                            <ul>
-                                <li>Project options and requirements</li>
-                                <li>How to demonstrate AI-assisted workflow</li>
-                                <li>Presentation format and timing</li>
-                                <li>Q&A and project selection</li>
-                            </ul>
-                        </div>
-                        <div class="exercise-section">
-                            <div class="section-label"><span class="time">50 min</span> Build + Present</div>
-                            <ul>
-                                <li><strong>Option A:</strong> Build a small tool/feature using everything learned</li>
-                                <li><strong>Option B:</strong> Refactor/document existing code with AI</li>
-                                <li><strong>Option C:</strong> Create a custom AI-powered workflow for your team</li>
-                                <li><strong>Present:</strong> 3-minute demo showing before/after</li>
-                            </ul>
-                            <div class="outcome"><strong>Outcome:</strong> Tangible artifact + confidence to continue independently</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
+        <div class="legend-item">
+          <div class="legend-color" style="background: var(--day4)"></div>
+          <span>Day 4: Advanced Patterns</span>
         </div>
-        
-        <footer class="footer">
-            <div class="footer-stats">
-                <div class="stat">
-                    <div class="stat-value">14</div>
-                    <div class="stat-label">Lessons</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">5</div>
-                    <div class="stat-label">Days</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">20</div>
-                    <div class="stat-label">Hours</div>
-                </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: var(--day5)"></div>
+          <span>Day 5: Strategy & Capstone</span>
+        </div>
+      </div>
+
+      <!-- CALENDAR VIEW -->
+      <div class="calendar">
+        <!-- Header Row -->
+        <div class="corner"></div>
+        <div class="day-header">
+          Monday
+          <div class="date">Day 1</div>
+          <div class="theme">Quick Wins</div>
+        </div>
+        <div class="day-header">
+          Tuesday
+          <div class="date">Day 2</div>
+          <div class="theme">Frameworks & Constraints</div>
+        </div>
+        <div class="day-header">
+          Wednesday
+          <div class="date">Day 3</div>
+          <div class="theme">Workflow Integration</div>
+        </div>
+        <div class="day-header">
+          Thursday
+          <div class="date">Day 4</div>
+          <div class="theme">Advanced Patterns</div>
+        </div>
+        <div class="day-header">
+          Friday
+          <div class="date">Day 5</div>
+          <div class="theme">Strategy & Capstone</div>
+        </div>
+
+        <!-- 9:00 - 10:20 -->
+        <div class="time-slot">9:00<br />—<br />10:20</div>
+        <div class="session phase-1">
+          <div class="lesson-num">Lesson 1</div>
+          <div class="title">Quick Wins & Setup</div>
+          <div class="duration">
+            Regex, Git, SQL, Tool Setup + Initial Prompt
+          </div>
+        </div>
+        <div class="session phase-2">
+          <div class="lesson-num">Lesson 4</div>
+          <div class="title">Working Within the Framework</div>
+          <div class="duration"></div>
+        </div>
+        <div class="session phase-3">
+          <div class="lesson-num">Lesson 7</div>
+          <div class="title">Code Review & Documentation</div>
+          <div class="duration"></div>
+        </div>
+        <div class="session phase-4">
+          <div class="lesson-num">Lesson 9</div>
+          <div class="title">AI-Assisted Refactoring</div>
+          <div class="duration">Modernizing legacy patterns</div>
+        </div>
+        <div class="session phase-5">
+          <div class="lesson-num">Lesson 12</div>
+          <div class="title">When AI Fails + Security</div>
+          <div class="duration">Limits, verification & privacy</div>
+        </div>
+
+        <!-- 10:30 - 11:50 -->
+        <div class="time-slot">10:30<br />—<br />11:50</div>
+        <div class="session phase-1">
+          <div class="lesson-num">Lesson 2</div>
+          <div class="title">Code Explanation & Learning</div>
+          <div class="duration"></div>
+        </div>
+        <div class="session phase-2">
+          <div class="lesson-num">Lesson 5</div>
+          <div class="title">Overconstraining AI</div>
+          <div class="duration">When it helps vs. hurts</div>
+        </div>
+        <div class="session phase-3">
+          <div class="lesson-num">Lesson 8</div>
+          <div class="title">LLMs in Your CI Pipeline</div>
+          <div class="duration">Automated code review with AI</div>
+        </div>
+        <div class="session phase-4">
+          <div class="lesson-num">Lesson 10</div>
+          <div class="title">Cross-Language & "Not My Stack"</div>
+          <div class="duration"></div>
+        </div>
+        <div class="session phase-5">
+          <div class="lesson-num">Lesson 13</div>
+          <div class="title">Team Adoption Strategies</div>
+          <div class="duration"></div>
+        </div>
+
+        <!-- 12:00 - 1:00 (condensed session) -->
+        <div class="time-slot">11:50<br />—<br />1:00</div>
+        <div class="session phase-1">
+          <div class="lesson-num">Lesson 3</div>
+          <div class="title">Context Engineering</div>
+          <div class="duration">Getting consistent, quality output</div>
+        </div>
+        <div class="session phase-2">
+          <div class="lesson-num">Lesson 6</div>
+          <div class="title">Generating Code We Can Examine</div>
+          <div class="duration">CLI tool with types & tests</div>
+        </div>
+        <div class="session phase-3">
+          <div class="lesson-num">—</div>
+          <div class="title">Open Lab / Catch-up</div>
+          <div class="duration">Practice & Q&A</div>
+        </div>
+        <div class="session phase-4">
+          <div class="lesson-num">Lesson 11</div>
+          <div class="title">API Integration & Pipelines</div>
+          <div class="duration">Scripting & chaining prompts</div>
+        </div>
+        <div class="session phase-5">
+          <div class="lesson-num">Lesson 14</div>
+          <div class="title">Capstone Project</div>
+          <div class="duration">Build something real</div>
+        </div>
+      </div>
+
+      <!-- DETAILED LESSON BREAKDOWN -->
+      <div class="lessons-detail">
+        <!-- DAY 1 -->
+        <div class="phase-section">
+          <h2 class="phase-title">
+            <span class="phase-badge p1">Day 1</span>
+            Quick Wins — Building Trust Through Immediate Value
+          </h2>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">Lesson 1: Quick Wins & Setup</div>
+              </div>
+              <div class="lesson-meta">Day 1 • 9:00 AM<br />1hr 20min</div>
             </div>
-            <p class="footer-note">9:00 AM – 1:00 PM daily · 20min lecture + 60min exercise</p>
-        </footer>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">20 min</span> Lecture
+                </div>
+                <ul>
+                  <li>
+                    Why regex, git, and error messages are perfect entry points
+                  </li>
+                  <li>The psychology of "low stakes" AI interactions</li>
+                  <li>
+                    Tool landscape: ChatGPT vs Claude vs Copilot vs local models
+                  </li>
+                  <li>
+                    Understanding output variance — AI is probabilistic, not
+                    deterministic
+                  </li>
+                  <li>
+                    Live demo: Same prompt, different outputs across tools
+                  </li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">60 min</span> Exercise (includes breaks)
+                </div>
+                <ul>
+                  <li>
+                    <strong>Setup:</strong> Everyone creates accounts on 2+ AI
+                    tools
+                  </li>
+                  <li>
+                    <strong>Task 1:</strong> Generate 5 regex patterns you've
+                    struggled with before
+                  </li>
+                  <li>
+                    <strong>Task 2:</strong> Use AI to explain a cryptic git
+                    reflog situation
+                  </li>
+                  <li>
+                    <strong>Task 3:</strong> Feed it your worst error message
+                    from the past month
+                  </li>
+                  <li>
+                    <strong>Task 4:</strong> Run same prompt on different tools
+                    — compare results
+                  </li>
+                  <li>
+                    <strong>Discussion:</strong> Share your best output with the
+                    group
+                  </li>
+                </ul>
+                <div class="prompt-box">
+                  <div class="prompt-label">Starter Prompt</div>
+                  "Write a regex that matches [your specific case]. Explain each
+                  part of the pattern and give me 5 test cases that should match
+                  and 5 that shouldn't."
+                </div>
+                <div class="outcome">
+                  <strong>Outcome:</strong> 4+ concrete wins to use tomorrow +
+                  understanding of tool differences
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">
+                  Lesson 2: Code Explanation & Learning
+                </div>
+              </div>
+              <div class="lesson-meta">Day 1 • 10:30 AM<br />1hr 20min</div>
+            </div>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">20 min</span> Lecture
+                </div>
+                <ul>
+                  <li>
+                    The safest AI use case: asking questions costs nothing
+                  </li>
+                  <li>"What does this do?" — the zero-risk starting point</li>
+                  <li>
+                    Reading unfamiliar languages, frameworks, and patterns
+                  </li>
+                  <li>Demo: Explaining a gnarly piece of code in 60 seconds</li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">60 min</span> Exercise (includes breaks)
+                </div>
+                <ul>
+                  <li>
+                    <strong>Task 1:</strong> Find code you've never understood —
+                    get it explained
+                  </li>
+                  <li>
+                    <strong>Task 2:</strong> Paste code in a language you don't
+                    know — learn what it does
+                  </li>
+                  <li>
+                    <strong>Task 3:</strong> Ask "why was it written this way?"
+                    on a confusing pattern
+                  </li>
+                  <li>
+                    <strong>Task 4:</strong> Get a line-by-line breakdown of a
+                    complex function
+                  </li>
+                </ul>
+                <div class="prompt-box">
+                  <div class="prompt-label">Starter Prompt</div>
+                  "Explain this code like I'm a developer who's never seen this
+                  language/framework before. What does it do, and why might
+                  someone write it this way?"
+                </div>
+                <div class="outcome">
+                  <strong>Outcome:</strong> Confidence to explore any codebase
+                  without fear
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">Lesson 3: Context Engineering</div>
+              </div>
+              <div class="lesson-meta">Day 1 • 11:50 AM<br />1hr 10min</div>
+            </div>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">20 min</span> Lecture
+                </div>
+                <ul>
+                  <li>Why prompt quality determines output quality</li>
+                  <li>Core patterns: role, context, task, format, examples</li>
+                  <li>Iteration strategies: refining prompts systematically</li>
+                  <li>The "prompt library" concept</li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">50 min</span> Exercise (includes breaks)
+                </div>
+                <ul>
+                  <li>
+                    <strong>Task 1:</strong> Transform a vague prompt into a
+                    precise one
+                  </li>
+                  <li>
+                    <strong>Task 2:</strong> Use few-shot examples to control
+                    output format
+                  </li>
+                  <li>
+                    <strong>Task 3:</strong> Create a reusable prompt template
+                  </li>
+                  <li>
+                    <strong>Group work:</strong> Build a shared prompt library
+                    for common tasks
+                  </li>
+                </ul>
+                <div class="prompt-box">
+                  <div class="prompt-label">Template Pattern</div>
+                  "You are a [role]. Given [context], your task is to [specific
+                  action]. Output should be [format]. Here's an example:
+                  [example]."
+                </div>
+                <div class="outcome">
+                  <strong>Outcome:</strong> Personal prompt library with 10+
+                  reusable templates
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 2 -->
+        <div class="phase-section">
+          <h2 class="phase-title">
+            <span class="phase-badge p2">Day 2</span>
+            Frameworks & Constraints — When Structure Helps (and Hurts)
+          </h2>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">
+                  Lesson 4: Working Within the Framework
+                </div>
+              </div>
+              <div class="lesson-meta">Day 2 • 9:00 AM<br />1hr 20min</div>
+            </div>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">20 min</span> Lecture
+                </div>
+                <ul>
+                  <li>Why frameworks are AI's comfort zone</li>
+                  <li>
+                    Game engines (Godot, Unity, Unreal) as structured
+                    environments
+                  </li>
+                  <li>
+                    How AI leverages patterns, conventions, and documentation
+                  </li>
+                  <li>Demo: Building a game mechanic in Godot with AI</li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">60 min</span> Exercise (includes breaks)
+                </div>
+                <ul>
+                  <li>
+                    <strong>Task 1:</strong> Generate a player controller script
+                    in Godot/Unity
+                  </li>
+                  <li>
+                    <strong>Task 2:</strong> Ask AI to implement a game mechanic
+                    (inventory, combat, etc.)
+                  </li>
+                  <li>
+                    <strong>Task 3:</strong> Debug framework-specific errors
+                    with AI assistance
+                  </li>
+                  <li>
+                    <strong>Task 4:</strong> Compare output quality when you
+                    specify the framework vs. generic request
+                  </li>
+                </ul>
+                <div class="prompt-box">
+                  <div class="prompt-label">Framework-Aware Prompt</div>
+                  "In Godot 4 using GDScript, create a 2D player controller
+                  with: WASD movement, jump with coyote time, and animation
+                  state machine. Use CharacterBody2D."
+                </div>
+                <div class="outcome">
+                  <strong>Outcome:</strong> Understanding that framework context
+                  dramatically improves AI output
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">
+                  Lesson 5: Overconstraining AI — Overconstraining AI
+                </div>
+              </div>
+              <div class="lesson-meta">Day 2 • 10:30 AM<br />1hr 20min</div>
+            </div>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">20 min</span> Lecture
+                </div>
+                <ul>
+                  <li>
+                    The constraint spectrum: too little vs. too much guidance
+                  </li>
+                  <li>Case study: React/Vue website vs. vanilla HTML/CSS/JS</li>
+                  <li>
+                    When frameworks help AI (patterns, conventions, examples)
+                  </li>
+                  <li>
+                    When frameworks hurt AI (outdated training, niche APIs,
+                    version conflicts)
+                  </li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">60 min</span> Exercise (includes breaks)
+                </div>
+                <ul>
+                  <li>
+                    <strong>Task 1:</strong> Build the same component in React
+                    AND vanilla JS — compare results
+                  </li>
+                  <li>
+                    <strong>Task 2:</strong> Intentionally overconstrain:
+                    specify framework + version + obscure library
+                  </li>
+                  <li>
+                    <strong>Task 3:</strong> Intentionally underconstrain:
+                    "build me a website" with no guidance
+                  </li>
+                  <li>
+                    <strong>Discussion:</strong> When did constraints help? When
+                    did they create problems?
+                  </li>
+                </ul>
+                <div class="prompt-box">
+                  <div class="prompt-label">Experiment Prompts</div>
+                  <strong>Overconstrained:</strong> "Using React 18.3 with
+                  Zustand 4.5, React Query 5, and Radix UI, build a..."<br /><br />
+                  <strong>Underconstrained:</strong> "Build me a todo app"<br /><br />
+                  <strong>Balanced:</strong> "Build a todo app in React with
+                  state management. I'm flexible on libraries."
+                </div>
+                <div class="outcome">
+                  <strong>Outcome:</strong> Intuition for when to specify
+                  frameworks vs. let AI choose
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">
+                  Lesson 6: Generating Code We Can Examine
+                </div>
+              </div>
+              <div class="lesson-meta">Day 2 • 11:50 AM<br />1hr 10min</div>
+            </div>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">20 min</span> Lecture
+                </div>
+                <ul>
+                  <li>
+                    The "trust but verify" mindset — you MUST read the code
+                  </li>
+                  <li>Why type annotations matter for AI-generated code</li>
+                  <li>Testing as a verification mechanism</li>
+                  <li>
+                    Demo: CLI tool with full type hints, tests, and
+                    documentation
+                  </li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">50 min</span> Exercise (includes breaks)
+                </div>
+                <ul>
+                  <li>
+                    <strong>Project:</strong> Build a CLI tool from scratch with
+                    AI
+                  </li>
+                  <li>
+                    <strong>Requirements:</strong> argparse/click, type
+                    annotations, pytest tests, docstrings
+                  </li>
+                  <li>
+                    <strong>Task 1:</strong> Generate the initial structure
+                  </li>
+                  <li>
+                    <strong>Task 2:</strong> Read every line — find at least 2
+                    things you'd change
+                  </li>
+                  <li>
+                    <strong>Task 3:</strong> Run the tests — do they actually
+                    test the right things?
+                  </li>
+                  <li>
+                    <strong>Task 4:</strong> Refactor one function based on your
+                    review
+                  </li>
+                </ul>
+                <div class="prompt-box">
+                  <div class="prompt-label">Project Prompt</div>
+                  "Create a CLI tool that [your choice: converts files, fetches
+                  data, generates reports, etc.]. Include: click for CLI, full
+                  type annotations, pytest tests with >80% coverage, and
+                  Google-style docstrings. Structure as a proper package with
+                  pyproject.toml."
+                </div>
+                <div class="outcome">
+                  <strong>Outcome:</strong> Habit of examining AI code
+                  critically + a working CLI tool to take home
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 3 -->
+        <div class="phase-section">
+          <h2 class="phase-title">
+            <span class="phase-badge p3">Day 3</span>
+            Workflow Integration — Making AI Invisible
+          </h2>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">
+                  Lesson 7: Code Review & Documentation
+                </div>
+              </div>
+              <div class="lesson-meta">Day 3 • 9:00 AM<br />1hr 20min</div>
+            </div>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">20 min</span> Lecture
+                </div>
+                <ul>
+                  <li>
+                    Pre-PR self-review: catching issues before teammates do
+                  </li>
+                  <li>Security vulnerability patterns AI can spot</li>
+                  <li>Documentation debt: the silent productivity killer</li>
+                  <li>Demo: Review + document a module in 10 minutes</li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">60 min</span> Exercise (includes breaks)
+                </div>
+                <ul>
+                  <li>
+                    <strong>Task 1:</strong> Review your own recent PR with AI
+                  </li>
+                  <li>
+                    <strong>Task 2:</strong> Scan code for security issues
+                  </li>
+                  <li>
+                    <strong>Task 3:</strong> Generate README for an existing
+                    project
+                  </li>
+                  <li>
+                    <strong>Task 4:</strong> Add docstrings to undocumented
+                    functions
+                  </li>
+                </ul>
+                <div class="outcome">
+                  <strong>Outcome:</strong> Pre-PR checklist that catches 90% of
+                  review comments
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">
+                  Lesson 8: LLMs in Your CI Pipeline
+                </div>
+              </div>
+              <div class="lesson-meta">Day 3 • 10:30 AM<br />1hr 20min</div>
+            </div>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">20 min</span> Lecture
+                </div>
+                <ul>
+                  <li>
+                    Why automated code review matters: catching issues before
+                    humans review
+                  </li>
+                  <li>
+                    Architecture: GitHub Actions, GitLab CI, or webhooks + LLM
+                    APIs
+                  </li>
+                  <li>
+                    What LLMs can catch: security issues, style violations,
+                    logic errors, missing tests
+                  </li>
+                  <li>
+                    Demo: A GitHub Action that reviews PRs with Claude/GPT
+                  </li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">60 min</span> Exercise (includes breaks)
+                </div>
+                <ul>
+                  <li>
+                    <strong>Task 1:</strong> Set up a GitHub Action that calls
+                    an LLM API on PR diffs
+                  </li>
+                  <li>
+                    <strong>Task 2:</strong> Craft a system prompt optimized for
+                    code review (security, style, bugs)
+                  </li>
+                  <li>
+                    <strong>Task 3:</strong> Handle context limits: chunking
+                    large PRs, summarizing files
+                  </li>
+                  <li>
+                    <strong>Task 4:</strong> Post review comments back to the PR
+                    automatically
+                  </li>
+                </ul>
+                <div class="prompt-box">
+                  <div class="prompt-label">CI Review Prompt Template</div>
+                  "You are a senior code reviewer. Analyze this diff for: 1)
+                  Security vulnerabilities, 2) Logic errors, 3) Performance
+                  issues, 4) Missing error handling. Be specific with line
+                  numbers. Only flag real issues—no nitpicks."
+                </div>
+                <div class="outcome">
+                  <strong>Outcome:</strong> A working CI pipeline that reviews
+                  every PR with AI before human review
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">Open Lab / Catch-up Session</div>
+              </div>
+              <div class="lesson-meta">Day 3 • 11:50 AM<br />1hr 10min</div>
+            </div>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">10 min</span> Quick Recap
+                </div>
+                <ul>
+                  <li>Review key concepts from Days 1-3</li>
+                  <li>Address common questions and stumbling blocks</li>
+                  <li>Share wins and breakthroughs from the group</li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">60 min</span> Open Practice
+                </div>
+                <ul>
+                  <li>
+                    <strong>Option A:</strong> Catch up on any exercises from
+                    earlier lessons
+                  </li>
+                  <li>
+                    <strong>Option B:</strong> Apply techniques to your own real
+                    work project
+                  </li>
+                  <li>
+                    <strong>Option C:</strong> Pair with a colleague to tackle a
+                    shared challenge
+                  </li>
+                  <li>
+                    <strong>Option D:</strong> Experiment with advanced prompt
+                    techniques
+                  </li>
+                  <li>
+                    <strong>1:1 Support:</strong> Instructor available for
+                    individual questions
+                  </li>
+                </ul>
+                <div class="outcome">
+                  <strong>Outcome:</strong> Consolidate learning before moving
+                  to advanced patterns
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 4 -->
+        <div class="phase-section">
+          <h2 class="phase-title">
+            <span class="phase-badge p4">Day 4</span>
+            Advanced Patterns — Power User Techniques
+          </h2>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">
+                  Lesson 9: AI-Assisted Refactoring
+                </div>
+              </div>
+              <div class="lesson-meta">Day 4 • 9:00 AM<br />1hr 20min</div>
+            </div>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">20 min</span> Lecture
+                </div>
+                <ul>
+                  <li>Refactoring patterns AI handles well</li>
+                  <li>Modernizing legacy code safely</li>
+                  <li>Extracting functions, classes, modules</li>
+                  <li>Demo: Refactor a 500-line function</li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">60 min</span> Exercise (includes breaks)
+                </div>
+                <ul>
+                  <li>
+                    <strong>Task 1:</strong> Convert callback hell to
+                    async/await
+                  </li>
+                  <li>
+                    <strong>Task 2:</strong> Extract a god class into smaller
+                    components
+                  </li>
+                  <li>
+                    <strong>Task 3:</strong> Modernize old API usage patterns
+                  </li>
+                  <li>
+                    <strong>Task 4:</strong> Add types to untyped JavaScript
+                  </li>
+                </ul>
+                <div class="outcome">
+                  <strong>Outcome:</strong> Refactoring playbook for common
+                  legacy patterns
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">
+                  Lesson 10: Cross-Language & "Not My Stack"
+                </div>
+              </div>
+              <div class="lesson-meta">Day 4 • 10:30 AM<br />1hr 20min</div>
+            </div>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">20 min</span> Lecture
+                </div>
+                <ul>
+                  <li>When and why to translate code between languages</li>
+                  <li>Preserving idioms vs. literal translation</li>
+                  <li>Frontend for backend devs, backend for frontend devs</li>
+                  <li>Demo: Python → Rust with proper error handling</li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">60 min</span> Exercise (includes breaks)
+                </div>
+                <ul>
+                  <li>
+                    <strong>Task 1:</strong> Port a script to a new language
+                  </li>
+                  <li>
+                    <strong>Task 2:</strong> Build something in your weak area
+                  </li>
+                  <li>
+                    <strong>Task 3:</strong> Fix a CSS layout (backend devs) /
+                    write SQL (frontend devs)
+                  </li>
+                  <li>
+                    <strong>Pair work:</strong> Each person tackles the other's
+                    specialty
+                  </li>
+                </ul>
+                <div class="outcome">
+                  <strong>Outcome:</strong> Reduced fear of "not my area" tasks
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">
+                  Lesson 11: API Integration & Pipelines
+                </div>
+              </div>
+              <div class="lesson-meta">Day 4 • 11:50 AM<br />1hr 10min</div>
+            </div>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">20 min</span> Lecture
+                </div>
+                <ul>
+                  <li>
+                    Using AI APIs programmatically (OpenAI, Anthropic, etc.)
+                  </li>
+                  <li>Chaining prompts for complex tasks</li>
+                  <li>Building AI-powered scripts and tools</li>
+                  <li>Demo: Build a custom AI-powered CLI tool</li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">50 min</span> Exercise (includes breaks)
+                </div>
+                <ul>
+                  <li>
+                    <strong>Task 1:</strong> Write a script that calls an AI API
+                  </li>
+                  <li>
+                    <strong>Task 2:</strong> Build a git hook that uses AI
+                  </li>
+                  <li>
+                    <strong>Task 3:</strong> Chain 3+ prompts to solve a complex
+                    problem
+                  </li>
+                  <li>
+                    <strong>Challenge:</strong> Create a self-improving prompt
+                    chain
+                  </li>
+                </ul>
+                <div class="outcome">
+                  <strong>Outcome:</strong> A custom AI-powered tool you'll
+                  actually use
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 5 -->
+        <div class="phase-section">
+          <h2 class="phase-title">
+            <span class="phase-badge p5">Day 5</span>
+            Strategy & Capstone — Making It Stick
+          </h2>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">
+                  Lesson 12: When AI Fails + Security
+                </div>
+              </div>
+              <div class="lesson-meta">Day 5 • 9:00 AM<br />1hr 20min</div>
+            </div>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">20 min</span> Lecture
+                </div>
+                <ul>
+                  <li>Recognizing AI limitations and hallucinations</li>
+                  <li>Tasks AI consistently struggles with</li>
+                  <li>What goes to the AI (and what stays local)</li>
+                  <li>Company policies, compliance, and sanitization</li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">60 min</span> Exercise (includes breaks)
+                </div>
+                <ul>
+                  <li>
+                    <strong>Task 1:</strong> Intentionally break AI with hard
+                    problems
+                  </li>
+                  <li>
+                    <strong>Task 2:</strong> Spot hallucinations in generated
+                    code
+                  </li>
+                  <li>
+                    <strong>Task 3:</strong> Audit what you've shared with AI
+                    this week
+                  </li>
+                  <li>
+                    <strong>Group work:</strong> Draft team AI usage guidelines
+                  </li>
+                </ul>
+                <div class="outcome">
+                  <strong>Outcome:</strong> Healthy skepticism + clear policy
+                  for safe AI usage
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">
+                  Lesson 13: Team Adoption Strategies
+                </div>
+              </div>
+              <div class="lesson-meta">Day 5 • 10:30 AM<br />1hr 20min</div>
+            </div>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">20 min</span> Lecture
+                </div>
+                <ul>
+                  <li>Rolling out AI to skeptical teammates</li>
+                  <li>Measuring productivity impact</li>
+                  <li>Handling resistance and concerns</li>
+                  <li>Building an AI champions program</li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">60 min</span> Exercise (includes breaks)
+                </div>
+                <ul>
+                  <li>
+                    <strong>Task 1:</strong> Create a 5-minute demo for
+                    skeptical colleagues
+                  </li>
+                  <li>
+                    <strong>Task 2:</strong> Draft a team adoption proposal
+                  </li>
+                  <li>
+                    <strong>Task 3:</strong> Design metrics to track AI impact
+                  </li>
+                  <li>
+                    <strong>Role-play:</strong> Practice handling objections
+                  </li>
+                </ul>
+                <div class="outcome">
+                  <strong>Outcome:</strong> Adoption toolkit to bring back to
+                  your team
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div>
+                <div class="lesson-title">Lesson 14: Capstone Project</div>
+              </div>
+              <div class="lesson-meta">Day 5 • 11:50 AM<br />1hr 10min</div>
+            </div>
+            <div class="lesson-content">
+              <div class="lecture-section">
+                <div class="section-label">
+                  <span class="time">20 min</span> Kickoff
+                </div>
+                <ul>
+                  <li>Project options and requirements</li>
+                  <li>How to demonstrate AI-assisted workflow</li>
+                  <li>Presentation format and timing</li>
+                  <li>Q&A and project selection</li>
+                </ul>
+              </div>
+              <div class="exercise-section">
+                <div class="section-label">
+                  <span class="time">50 min</span> Build + Present
+                </div>
+                <ul>
+                  <li>
+                    <strong>Option A:</strong> Build a small tool/feature using
+                    everything learned
+                  </li>
+                  <li>
+                    <strong>Option B:</strong> Refactor/document existing code
+                    with AI
+                  </li>
+                  <li>
+                    <strong>Option C:</strong> Create a custom AI-powered
+                    workflow for your team
+                  </li>
+                  <li>
+                    <strong>Present:</strong> 3-minute demo showing before/after
+                  </li>
+                </ul>
+                <div class="outcome">
+                  <strong>Outcome:</strong> Tangible artifact + confidence to
+                  continue independently
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-stats">
+          <div class="stat">
+            <div class="stat-value">14</div>
+            <div class="stat-label">Lessons</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">5</div>
+            <div class="stat-label">Days</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">20</div>
+            <div class="stat-label">Hours</div>
+          </div>
+        </div>
+        <p class="footer-note">
+          9:00 AM – 1:00 PM daily · 20min lecture + 60min exercise
+        </p>
+      </footer>
     </div>
-    
+
     <script>
-        // Save view preference when clicking toggle
-        document.getElementById('viewToggle').addEventListener('click', function(e) {
-            localStorage.setItem('ai-course-view-preference', 'skill-tree');
+      // Save view preference when clicking toggle
+      document
+        .getElementById("viewToggle")
+        .addEventListener("click", function (e) {
+          localStorage.setItem("ai-course-view-preference", "skill-tree");
         });
     </script>
-</body>
+  </body>
 </html>
