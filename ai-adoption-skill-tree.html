@@ -81,7 +81,7 @@
         .container {
             position: relative;
             z-index: 1;
-            max-width: 1000px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 3rem 2rem 6rem;
         }
@@ -98,7 +98,7 @@
             content: '';
             position: absolute;
             top: 50%;
-            width: 120px;
+            width: 200px;
             height: 1px;
             background: linear-gradient(90deg, transparent, var(--line-subtle));
         }
@@ -107,7 +107,7 @@
         .header::after { right: 0; transform: scaleX(-1); }
         
         h1 {
-            font-size: 2.8rem;
+            font-size: 3.2rem;
             font-weight: 400;
             letter-spacing: 0.08em;
             margin-bottom: 0.5rem;
@@ -123,6 +123,54 @@
             letter-spacing: 0.2em;
             text-transform: uppercase;
             color: var(--text-muted);
+        }
+        
+        .course-time {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), rgba(96, 165, 250, 0.1));
+            border: 1px solid var(--line-subtle);
+            border-radius: 8px;
+        }
+        
+        .course-time-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--day1);
+        }
+        
+        .course-time-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+        }
+        
+        .course-time-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding-left: 0.75rem;
+            border-left: 1px solid var(--line-subtle);
+        }
+        
+        .node-time {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
         }
         
         /* Skill Tree */
@@ -221,25 +269,25 @@
             z-index: 1;
             display: flex;
             justify-content: center;
-            gap: 2rem;
-            margin-bottom: 1.5rem;
+            gap: 3rem;
+            margin-bottom: 2rem;
             width: 100%;
         }
         
         /* Offset rows for Escher-like impossible staircase feel */
         .skill-row:nth-child(odd) {
-            transform: translateX(-30px);
+            transform: translateX(-50px);
         }
         
         .skill-row:nth-child(even) {
-            transform: translateX(30px);
+            transform: translateX(50px);
         }
         
         /* Individual skill node */
         .skill-node {
             position: relative;
-            width: 160px;
-            padding: 1.25rem;
+            width: 240px;
+            padding: 1.5rem;
             background: var(--node-available);
             border: 1px solid var(--line-subtle);
             cursor: pointer;
@@ -305,14 +353,14 @@
         /* Node content */
         .node-number {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6rem;
+            font-size: 0.7rem;
             letter-spacing: 0.1em;
             color: var(--text-muted);
             margin-bottom: 0.5rem;
         }
         
         .node-title {
-            font-size: 0.95rem;
+            font-size: 1.1rem;
             font-weight: 600;
             line-height: 1.3;
             margin-bottom: 0.5rem;
@@ -320,7 +368,7 @@
         
         .node-subtitle {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
             line-height: 1.4;
         }
@@ -333,6 +381,11 @@
             width: 24px;
             height: 24px;
             opacity: 0.4;
+        }
+        
+        /* Capstone node - wider */
+        .capstone-node {
+            width: 300px;
         }
         
         /* Progress indicator */
@@ -537,8 +590,8 @@
         .footer-stats {
             display: flex;
             justify-content: center;
-            gap: 3rem;
-            margin-bottom: 1rem;
+            gap: 5rem;
+            margin-bottom: 1.5rem;
         }
         
         .stat {
@@ -546,7 +599,7 @@
         }
         
         .stat-value {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 600;
             background: linear-gradient(135deg, var(--day1), var(--day5));
             -webkit-background-clip: text;
@@ -556,7 +609,7 @@
         
         .stat-label {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
+            font-size: 0.75rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
             color: var(--text-muted);
@@ -564,11 +617,104 @@
         
         .footer-note {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
         }
         
-        /* Responsive */
+        /* Large desktop - maximize space */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1600px;
+                padding: 4rem 4rem 6rem;
+            }
+            
+            h1 {
+                font-size: 3.5rem;
+            }
+            
+            .skill-row {
+                gap: 4rem;
+            }
+            
+            .skill-node {
+                width: 280px;
+                padding: 1.75rem;
+            }
+            
+            .capstone-node {
+                width: 340px;
+            }
+            
+            .node-title {
+                font-size: 1.2rem;
+            }
+            
+            .node-subtitle {
+                font-size: 0.8rem;
+            }
+            
+            .day-header {
+                padding: 1rem 3rem;
+            }
+            
+            .day-title {
+                font-size: 1.25rem;
+            }
+            
+            .detail-panel {
+                width: 520px;
+            }
+            
+            .footer-stats {
+                gap: 6rem;
+            }
+            
+            .stat-value {
+                font-size: 3rem;
+            }
+        }
+        
+        /* Extra large desktop */
+        @media (min-width: 1600px) {
+            .container {
+                max-width: 1800px;
+            }
+            
+            h1 {
+                font-size: 4rem;
+            }
+            
+            .skill-row {
+                gap: 5rem;
+            }
+            
+            .skill-row:nth-child(odd) {
+                transform: translateX(-80px);
+            }
+            
+            .skill-row:nth-child(even) {
+                transform: translateX(80px);
+            }
+            
+            .skill-node {
+                width: 320px;
+                padding: 2rem;
+            }
+            
+            .capstone-node {
+                width: 380px;
+            }
+            
+            .node-title {
+                font-size: 1.3rem;
+            }
+            
+            .footer-stats {
+                gap: 8rem;
+            }
+        }
+        
+        /* Responsive - mobile */
         @media (max-width: 768px) {
             .container {
                 padding: 2rem 1rem;
@@ -576,6 +722,11 @@
             
             h1 {
                 font-size: 2rem;
+            }
+            
+            .header::before,
+            .header::after {
+                width: 60px;
             }
             
             .skill-row {
@@ -589,9 +740,23 @@
                 transform: none;
             }
             
-            .skill-node {
+            .skill-node,
+            .capstone-node {
                 width: 90%;
                 max-width: 280px;
+                padding: 1.25rem;
+            }
+            
+            .node-title {
+                font-size: 0.95rem;
+            }
+            
+            .node-subtitle {
+                font-size: 0.65rem;
+            }
+            
+            .node-number {
+                font-size: 0.6rem;
             }
             
             .detail-panel {
@@ -601,6 +766,22 @@
             
             .impossible-stairs {
                 display: none;
+            }
+            
+            .footer-stats {
+                gap: 2rem;
+            }
+            
+            .stat-value {
+                font-size: 2rem;
+            }
+            
+            .stat-label {
+                font-size: 0.65rem;
+            }
+            
+            .footer-note {
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -645,6 +826,14 @@
         <header class="header">
             <h1>AI for Programmers</h1>
             <p class="subtitle">5-Day Training · Skill Progression</p>
+            <div class="course-time">
+                <svg class="course-time-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
+                </svg>
+                <span class="course-time-text">9:00 AM – 1:00 PM</span>
+                <span class="course-time-label">Daily Schedule</span>
+            </div>
         </header>
         
         <div class="skill-tree">
@@ -659,6 +848,7 @@
                 <div class="skill-row">
                     <div class="skill-node" data-lesson="1">
                         <div class="node-accent"></div>
+                        <span class="node-time">9:00 AM</span>
                         <div class="node-number">Lesson 01</div>
                         <div class="node-title">Quick Wins & Setup</div>
                         <div class="node-subtitle">Regex, Git, Errors</div>
@@ -672,6 +862,7 @@
                 <div class="skill-row">
                     <div class="skill-node" data-lesson="2">
                         <div class="node-accent"></div>
+                        <span class="node-time">10:20 AM</span>
                         <div class="node-number">Lesson 02</div>
                         <div class="node-title">Code Explanation</div>
                         <div class="node-subtitle">Understanding Fast</div>
@@ -682,6 +873,7 @@
                     </div>
                     <div class="skill-node" data-lesson="3">
                         <div class="node-accent"></div>
+                        <span class="node-time">11:40 AM</span>
                         <div class="node-number">Lesson 03</div>
                         <div class="node-title">Context Engineering</div>
                         <div class="node-subtitle">Quality Prompts</div>
@@ -704,6 +896,7 @@
                 <div class="skill-row">
                     <div class="skill-node" data-lesson="4">
                         <div class="node-accent"></div>
+                        <span class="node-time">9:00 AM</span>
                         <div class="node-number">Lesson 04</div>
                         <div class="node-title">Within the Framework</div>
                         <div class="node-subtitle">Game Engines, Godot</div>
@@ -718,6 +911,7 @@
                 <div class="skill-row">
                     <div class="skill-node" data-lesson="5">
                         <div class="node-accent"></div>
+                        <span class="node-time">10:20 AM</span>
                         <div class="node-number">Lesson 05</div>
                         <div class="node-title">With vs. Without</div>
                         <div class="node-subtitle">Constraint Balance</div>
@@ -729,6 +923,7 @@
                     </div>
                     <div class="skill-node" data-lesson="6">
                         <div class="node-accent"></div>
+                        <span class="node-time">11:40 AM</span>
                         <div class="node-number">Lesson 06</div>
                         <div class="node-title">Examinable Code</div>
                         <div class="node-subtitle">Types & Tests</div>
@@ -751,6 +946,7 @@
                 <div class="skill-row">
                     <div class="skill-node" data-lesson="7">
                         <div class="node-accent"></div>
+                        <span class="node-time">9:00 AM</span>
                         <div class="node-number">Lesson 07</div>
                         <div class="node-title">Review & Docs</div>
                         <div class="node-subtitle">Pre-PR Checks</div>
@@ -762,6 +958,7 @@
                     </div>
                     <div class="skill-node" data-lesson="8">
                         <div class="node-accent"></div>
+                        <span class="node-time">10:20 AM</span>
                         <div class="node-number">Lesson 08</div>
                         <div class="node-title">LLMs in CI</div>
                         <div class="node-subtitle">Automated Review</div>
@@ -776,6 +973,7 @@
                 <div class="skill-row">
                     <div class="skill-node" data-lesson="lab" style="opacity: 0.6;">
                         <div class="node-accent"></div>
+                        <span class="node-time">11:40 AM</span>
                         <div class="node-number">Open Lab</div>
                         <div class="node-title">Practice & Q&A</div>
                         <div class="node-subtitle">Catch-up Session</div>
@@ -799,6 +997,7 @@
                 <div class="skill-row">
                     <div class="skill-node" data-lesson="9">
                         <div class="node-accent"></div>
+                        <span class="node-time">9:00 AM</span>
                         <div class="node-number">Lesson 09</div>
                         <div class="node-title">AI Refactoring</div>
                         <div class="node-subtitle">Legacy Patterns</div>
@@ -812,6 +1011,7 @@
                 <div class="skill-row">
                     <div class="skill-node" data-lesson="10">
                         <div class="node-accent"></div>
+                        <span class="node-time">10:20 AM</span>
                         <div class="node-number">Lesson 10</div>
                         <div class="node-title">Cross-Language</div>
                         <div class="node-subtitle">Not My Stack</div>
@@ -822,6 +1022,7 @@
                     </div>
                     <div class="skill-node" data-lesson="11">
                         <div class="node-accent"></div>
+                        <span class="node-time">11:40 AM</span>
                         <div class="node-number">Lesson 11</div>
                         <div class="node-title">API Pipelines</div>
                         <div class="node-subtitle">Chaining Prompts</div>
@@ -843,6 +1044,7 @@
                 <div class="skill-row">
                     <div class="skill-node" data-lesson="12">
                         <div class="node-accent"></div>
+                        <span class="node-time">9:00 AM</span>
                         <div class="node-number">Lesson 12</div>
                         <div class="node-title">When AI Fails</div>
                         <div class="node-subtitle">Limits & Security</div>
@@ -853,6 +1055,7 @@
                     </div>
                     <div class="skill-node" data-lesson="13">
                         <div class="node-accent"></div>
+                        <span class="node-time">10:20 AM</span>
                         <div class="node-number">Lesson 13</div>
                         <div class="node-title">Team Adoption</div>
                         <div class="node-subtitle">Rolling Out AI</div>
@@ -866,8 +1069,9 @@
                 </div>
                 
                 <div class="skill-row">
-                    <div class="skill-node" data-lesson="14" style="width: 200px;">
+                    <div class="skill-node capstone-node" data-lesson="14">
                         <div class="node-accent"></div>
+                        <span class="node-time">11:40 AM</span>
                         <div class="node-number">Lesson 14</div>
                         <div class="node-title">Capstone Project</div>
                         <div class="node-subtitle">Build Something Real</div>
