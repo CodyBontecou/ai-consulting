@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI for Programmers: 5-Day Training Course</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e5e5e5;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #333;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #888;
+            font-size: 1.1rem;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+        
+        .calendar {
+            display: grid;
+            grid-template-columns: 80px repeat(5, 1fr);
+            gap: 2px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+        
+        .time-slot {
+            background: #0a0a0a;
+            padding: 1rem 0.5rem;
+            text-align: right;
+            font-size: 0.8rem;
+            color: #666;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .day-header {
+            background: #1f1f1f;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            border-bottom: 2px solid #333;
+        }
+        
+        .day-header .date {
+            font-size: 0.75rem;
+            color: #666;
+            font-weight: 400;
+            margin-top: 0.25rem;
+        }
+        
+        .day-header .theme {
+            font-size: 0.7rem;
+            color: #888;
+            font-weight: 400;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+        
+        .session {
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .session .lesson-num {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.7;
+            margin-bottom: 0.25rem;
+        }
+        
+        .session .title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            line-height: 1.3;
+        }
+        
+        .session .duration {
+            font-size: 0.7rem;
+            opacity: 0.6;
+        }
+        
+        /* Phase colors */
+        .phase-1 { background: #1a3a2a; border-left: 3px solid #22c55e; }
+        .phase-2 { background: #1a2a3a; border-left: 3px solid #3b82f6; }
+        .phase-3 { background: #2a1a3a; border-left: 3px solid #a855f7; }
+        .phase-4 { background: #3a2a1a; border-left: 3px solid #f59e0b; }
+        .phase-5 { background: #3a1a1a; border-left: 3px solid #ef4444; }
+        
+        .corner {
+            background: #0a0a0a;
+        }
+        
+        /* Lesson Details */
+        .lessons-detail {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .phase-section {
+            margin-bottom: 3rem;
+        }
+        
+        .phase-title {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .phase-badge {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .phase-badge.p1 { background: #22c55e20; color: #22c55e; }
+        .phase-badge.p2 { background: #3b82f620; color: #3b82f6; }
+        .phase-badge.p3 { background: #a855f720; color: #a855f7; }
+        .phase-badge.p4 { background: #f59e0b20; color: #f59e0b; }
+        .phase-badge.p5 { background: #ef444420; color: #ef4444; }
+        
+        .lesson-card {
+            background: #141414;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #222;
+        }
+        
+        .lesson-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .lesson-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .lesson-meta {
+            font-size: 0.75rem;
+            color: #666;
+            text-align: right;
+        }
+        
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+        
+        .lecture-section, .exercise-section {
+            padding: 1rem;
+            background: #0a0a0a;
+            border-radius: 8px;
+        }
+        
+        .section-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #666;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .section-label .time {
+            background: #222;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        li {
+            padding: 0.35rem 0;
+            padding-left: 1.25rem;
+            position: relative;
+            font-size: 0.9rem;
+        }
+        
+        li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #555;
+        }
+        
+        .prompt-box {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 0.75rem;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+        
+        .prompt-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: #22c55e;
+            margin-bottom: 0.5rem;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .outcome {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: linear-gradient(90deg, #22c55e10, transparent);
+            border-left: 2px solid #22c55e;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        .outcome strong {
+            color: #22c55e;
+        }
+        
+        @media (max-width: 1200px) {
+            .calendar {
+                grid-template-columns: 60px repeat(3, 1fr);
+            }
+            
+            .lesson-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .schedule-note {
+            text-align: center;
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #141414;
+            border-radius: 8px;
+        }
+        
+        .schedule-note code {
+            background: #222;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: #22c55e;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AI for Programmers</h1>
+        <p class="subtitle">A 5-Day Hands-On Training Course for the AI-Curious (and AI-Skeptical)</p>
+    </div>
+    
+    <div class="schedule-note">
+        <strong>Schedule:</strong> <code>9:00 AM – 1:00 PM</code> daily (4 hours) &nbsp;|&nbsp;
+        <strong>Session Format:</strong> <code>20 min lecture</code> + <code>1 hour exercise</code> (breaks within) &nbsp;|&nbsp;
+        <strong>3 sessions per day</strong>
+    </div>
+    
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background: #22c55e;"></div>
+            <span>Day 1: Quick Wins</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #3b82f6;"></div>
+            <span>Day 2: Frameworks & Constraints</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #a855f7;"></div>
+            <span>Day 3: Workflow Integration</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #f59e0b;"></div>
+            <span>Day 4: Advanced Patterns</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ef4444;"></div>
+            <span>Day 5: Strategy & Capstone</span>
+        </div>
+    </div>
+    
+    <!-- CALENDAR VIEW -->
+    <div class="calendar">
+        <!-- Header Row -->
+        <div class="corner"></div>
+        <div class="day-header">
+            Monday
+            <div class="date">Day 1</div>
+            <div class="theme">Quick Wins</div>
+        </div>
+        <div class="day-header">
+            Tuesday
+            <div class="date">Day 2</div>
+            <div class="theme">Frameworks & Constraints</div>
+        </div>
+        <div class="day-header">
+            Wednesday
+            <div class="date">Day 3</div>
+            <div class="theme">Workflow Integration</div>
+        </div>
+        <div class="day-header">
+            Thursday
+            <div class="date">Day 4</div>
+            <div class="theme">Advanced Patterns</div>
+        </div>
+        <div class="day-header">
+            Friday
+            <div class="date">Day 5</div>
+            <div class="theme">Strategy & Capstone</div>
+        </div>
+        
+        <!-- 9:00 - 10:20 -->
+        <div class="time-slot">9:00<br>—<br>10:20</div>
+        <div class="session phase-1">
+            <div class="lesson-num">Lesson 1</div>
+            <div class="title">Quick Wins & Setup</div>
+            <div class="duration">Regex, Git, Errors + Tool Setup</div>
+        </div>
+        <div class="session phase-2">
+            <div class="lesson-num">Lesson 4</div>
+            <div class="title">Working Within the Framework</div>
+            <div class="duration">Game engines, Godot, structured environments</div>
+        </div>
+        <div class="session phase-3">
+            <div class="lesson-num">Lesson 7</div>
+            <div class="title">Code Review & Documentation</div>
+            <div class="duration">Pre-PR checks & auto-docs</div>
+        </div>
+        <div class="session phase-4">
+            <div class="lesson-num">Lesson 9</div>
+            <div class="title">AI-Assisted Refactoring</div>
+            <div class="duration">Modernizing legacy patterns</div>
+        </div>
+        <div class="session phase-5">
+            <div class="lesson-num">Lesson 12</div>
+            <div class="title">When AI Fails + Security</div>
+            <div class="duration">Limits, verification & privacy</div>
+        </div>
+        
+        <!-- 10:30 - 11:50 -->
+        <div class="time-slot">10:30<br>—<br>11:50</div>
+        <div class="session phase-1">
+            <div class="lesson-num">Lesson 2</div>
+            <div class="title">Code Explanation & Learning</div>
+            <div class="duration">Understanding unfamiliar code fast</div>
+        </div>
+        <div class="session phase-2">
+            <div class="lesson-num">Lesson 5</div>
+            <div class="title">With Framework vs. Without</div>
+            <div class="duration">Overconstraining AI — when it helps vs. hurts</div>
+        </div>
+        <div class="session phase-3">
+            <div class="lesson-num">Lesson 8</div>
+            <div class="title">LLMs in Your CI Pipeline</div>
+            <div class="duration">Automated code review with AI</div>
+        </div>
+        <div class="session phase-4">
+            <div class="lesson-num">Lesson 10</div>
+            <div class="title">Cross-Language & "Not My Stack"</div>
+            <div class="duration">Translation & bridging knowledge gaps</div>
+        </div>
+        <div class="session phase-5">
+            <div class="lesson-num">Lesson 13</div>
+            <div class="title">Team Adoption Strategies</div>
+            <div class="duration">Rolling out AI to skeptics</div>
+        </div>
+        
+        <!-- 12:00 - 1:00 (condensed session) -->
+        <div class="time-slot">11:50<br>—<br>1:00</div>
+        <div class="session phase-1">
+            <div class="lesson-num">Lesson 3</div>
+            <div class="title">Context Engineering</div>
+            <div class="duration">Getting consistent, quality output</div>
+        </div>
+        <div class="session phase-2">
+            <div class="lesson-num">Lesson 6</div>
+            <div class="title">Generating Code We Can Examine</div>
+            <div class="duration">Python CLI tool with types & tests</div>
+        </div>
+        <div class="session phase-3">
+            <div class="lesson-num">—</div>
+            <div class="title">Open Lab / Catch-up</div>
+            <div class="duration">Practice & Q&A</div>
+        </div>
+        <div class="session phase-4">
+            <div class="lesson-num">Lesson 11</div>
+            <div class="title">API Integration & Pipelines</div>
+            <div class="duration">Scripting & chaining prompts</div>
+        </div>
+        <div class="session phase-5">
+            <div class="lesson-num">Lesson 14</div>
+            <div class="title">Capstone Project</div>
+            <div class="duration">Build something real</div>
+        </div>
+    </div>
+    
+    <!-- DETAILED LESSON BREAKDOWN -->
+    <div class="lessons-detail">
+        
+        <!-- DAY 1 -->
+        <div class="phase-section">
+            <h2 class="phase-title">
+                <span class="phase-badge p1">Day 1</span>
+                Quick Wins — Building Trust Through Immediate Value
+            </h2>
+            
+            <div class="lesson-card">
+                <div class="lesson-header">
+                    <div>
+                        <div class="lesson-title">Lesson 1: Quick Wins & Setup</div>
+                    </div>
+                    <div class="lesson-meta">Day 1 • 9:00 AM<br>1hr 20min</div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lecture-section">
+                        <div class="section-label"><span class="time">20 min</span> Lecture</div>
+                        <ul>
+                            <li>Why regex, git, and error messages are perfect entry points</li>
+                            <li>The psychology of "low stakes" AI interactions</li>
+                            <li>Tool landscape: ChatGPT vs Claude vs Copilot vs local models</li>
+                            <li>Understanding output variance — AI is probabilistic, not deterministic</li>
+                            <li>Live demo: Same prompt, different outputs across tools</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-section">
+                        <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
+                        <ul>
+                            <li><strong>Setup:</strong> Everyone creates accounts on 2+ AI tools</li>
+                            <li><strong>Task 1:</strong> Generate 5 regex patterns you've struggled with before</li>
+                            <li><strong>Task 2:</strong> Use AI to explain a cryptic git reflog situation</li>
+                            <li><strong>Task 3:</strong> Feed it your worst error message from the past month</li>
+                            <li><strong>Task 4:</strong> Run same prompt on different tools — compare results</li>
+                            <li><strong>Discussion:</strong> Share your best output with the group</li>
+                        </ul>
+                        <div class="prompt-box">
+                            <div class="prompt-label">Starter Prompt</div>
+                            "Write a regex that matches [your specific case]. Explain each part of the pattern and give me 5 test cases that should match and 5 that shouldn't."
+                        </div>
+                        <div class="outcome"><strong>Outcome:</strong> 4+ concrete wins to use tomorrow + understanding of tool differences</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lesson-card">
+                <div class="lesson-header">
+                    <div>
+                        <div class="lesson-title">Lesson 2: Code Explanation & Learning</div>
+                    </div>
+                    <div class="lesson-meta">Day 1 • 10:30 AM<br>1hr 20min</div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lecture-section">
+                        <div class="section-label"><span class="time">20 min</span> Lecture</div>
+                        <ul>
+                            <li>The safest AI use case: asking questions costs nothing</li>
+                            <li>"What does this do?" — the zero-risk starting point</li>
+                            <li>Reading unfamiliar languages, frameworks, and patterns</li>
+                            <li>Demo: Explaining a gnarly piece of code in 60 seconds</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-section">
+                        <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
+                        <ul>
+                            <li><strong>Task 1:</strong> Find code you've never understood — get it explained</li>
+                            <li><strong>Task 2:</strong> Paste code in a language you don't know — learn what it does</li>
+                            <li><strong>Task 3:</strong> Ask "why was it written this way?" on a confusing pattern</li>
+                            <li><strong>Task 4:</strong> Get a line-by-line breakdown of a complex function</li>
+                        </ul>
+                        <div class="prompt-box">
+                            <div class="prompt-label">Starter Prompt</div>
+                            "Explain this code like I'm a developer who's never seen this language/framework before. What does it do, and why might someone write it this way?"
+                        </div>
+                        <div class="outcome"><strong>Outcome:</strong> Confidence to explore any codebase without fear</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lesson-card">
+                <div class="lesson-header">
+                    <div>
+                        <div class="lesson-title">Lesson 3: Context Engineering</div>
+                    </div>
+                    <div class="lesson-meta">Day 1 • 11:50 AM<br>1hr 10min</div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lecture-section">
+                        <div class="section-label"><span class="time">20 min</span> Lecture</div>
+                        <ul>
+                            <li>Why prompt quality determines output quality</li>
+                            <li>Core patterns: role, context, task, format, examples</li>
+                            <li>Iteration strategies: refining prompts systematically</li>
+                            <li>The "prompt library" concept</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-section">
+                        <div class="section-label"><span class="time">50 min</span> Exercise (includes breaks)</div>
+                        <ul>
+                            <li><strong>Task 1:</strong> Transform a vague prompt into a precise one</li>
+                            <li><strong>Task 2:</strong> Use few-shot examples to control output format</li>
+                            <li><strong>Task 3:</strong> Create a reusable prompt template</li>
+                            <li><strong>Group work:</strong> Build a shared prompt library for common tasks</li>
+                        </ul>
+                        <div class="prompt-box">
+                            <div class="prompt-label">Template Pattern</div>
+                            "You are a [role]. Given [context], your task is to [specific action]. Output should be [format]. Here's an example: [example]."
+                        </div>
+                        <div class="outcome"><strong>Outcome:</strong> Personal prompt library with 10+ reusable templates</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DAY 2 -->
+        <div class="phase-section">
+            <h2 class="phase-title">
+                <span class="phase-badge p2">Day 2</span>
+                Frameworks & Constraints — When Structure Helps (and Hurts)
+            </h2>
+            
+            <div class="lesson-card">
+                <div class="lesson-header">
+                    <div>
+                        <div class="lesson-title">Lesson 4: Working Within the Framework</div>
+                    </div>
+                    <div class="lesson-meta">Day 2 • 9:00 AM<br>1hr 20min</div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lecture-section">
+                        <div class="section-label"><span class="time">20 min</span> Lecture</div>
+                        <ul>
+                            <li>Why frameworks are AI's comfort zone</li>
+                            <li>Game engines (Godot, Unity, Unreal) as structured environments</li>
+                            <li>How AI leverages patterns, conventions, and documentation</li>
+                            <li>Demo: Building a game mechanic in Godot with AI</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-section">
+                        <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
+                        <ul>
+                            <li><strong>Task 1:</strong> Generate a player controller script in Godot/Unity</li>
+                            <li><strong>Task 2:</strong> Ask AI to implement a game mechanic (inventory, combat, etc.)</li>
+                            <li><strong>Task 3:</strong> Debug framework-specific errors with AI assistance</li>
+                            <li><strong>Task 4:</strong> Compare output quality when you specify the framework vs. generic request</li>
+                        </ul>
+                        <div class="prompt-box">
+                            <div class="prompt-label">Framework-Aware Prompt</div>
+                            "In Godot 4 using GDScript, create a 2D player controller with: WASD movement, jump with coyote time, and animation state machine. Use CharacterBody2D."
+                        </div>
+                        <div class="outcome"><strong>Outcome:</strong> Understanding that framework context dramatically improves AI output</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lesson-card">
+                <div class="lesson-header">
+                    <div>
+                        <div class="lesson-title">Lesson 5: With Framework vs. Without — Overconstraining AI</div>
+                    </div>
+                    <div class="lesson-meta">Day 2 • 10:30 AM<br>1hr 20min</div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lecture-section">
+                        <div class="section-label"><span class="time">20 min</span> Lecture</div>
+                        <ul>
+                            <li>The constraint spectrum: too little vs. too much guidance</li>
+                            <li>Case study: React/Vue website vs. vanilla HTML/CSS/JS</li>
+                            <li>When frameworks help AI (patterns, conventions, examples)</li>
+                            <li>When frameworks hurt AI (outdated training, niche APIs, version conflicts)</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-section">
+                        <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
+                        <ul>
+                            <li><strong>Task 1:</strong> Build the same component in React AND vanilla JS — compare results</li>
+                            <li><strong>Task 2:</strong> Intentionally overconstrain: specify framework + version + obscure library</li>
+                            <li><strong>Task 3:</strong> Intentionally underconstrain: "build me a website" with no guidance</li>
+                            <li><strong>Discussion:</strong> When did constraints help? When did they create problems?</li>
+                        </ul>
+                        <div class="prompt-box">
+                            <div class="prompt-label">Experiment Prompts</div>
+                            <strong>Overconstrained:</strong> "Using React 18.3 with Zustand 4.5, React Query 5, and Radix UI, build a..."<br><br>
+                            <strong>Underconstrained:</strong> "Build me a todo app"<br><br>
+                            <strong>Balanced:</strong> "Build a todo app in React with state management. I'm flexible on libraries."
+                        </div>
+                        <div class="outcome"><strong>Outcome:</strong> Intuition for when to specify frameworks vs. let AI choose</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lesson-card">
+                <div class="lesson-header">
+                    <div>
+                        <div class="lesson-title">Lesson 6: Generating Code We Can Examine</div>
+                    </div>
+                    <div class="lesson-meta">Day 2 • 11:50 AM<br>1hr 10min</div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lecture-section">
+                        <div class="section-label"><span class="time">20 min</span> Lecture</div>
+                        <ul>
+                            <li>The "trust but verify" mindset — you MUST read the code</li>
+                            <li>Why type annotations matter for AI-generated code</li>
+                            <li>Testing as a verification mechanism</li>
+                            <li>Demo: Python CLI tool with full type hints, tests, and documentation</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-section">
+                        <div class="section-label"><span class="time">50 min</span> Exercise (includes breaks)</div>
+                        <ul>
+                            <li><strong>Project:</strong> Build a Python CLI tool from scratch with AI</li>
+                            <li><strong>Requirements:</strong> argparse/click, type annotations, pytest tests, docstrings</li>
+                            <li><strong>Task 1:</strong> Generate the initial structure</li>
+                            <li><strong>Task 2:</strong> Read every line — find at least 2 things you'd change</li>
+                            <li><strong>Task 3:</strong> Run the tests — do they actually test the right things?</li>
+                            <li><strong>Task 4:</strong> Refactor one function based on your review</li>
+                        </ul>
+                        <div class="prompt-box">
+                            <div class="prompt-label">Project Prompt</div>
+                            "Create a Python CLI tool that [your choice: converts files, fetches data, generates reports, etc.]. Include: click for CLI, full type annotations, pytest tests with >80% coverage, and Google-style docstrings. Structure as a proper package with pyproject.toml."
+                        </div>
+                        <div class="outcome"><strong>Outcome:</strong> Habit of examining AI code critically + a working CLI tool to take home</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DAY 3 -->
+        <div class="phase-section">
+            <h2 class="phase-title">
+                <span class="phase-badge p3">Day 3</span>
+                Workflow Integration — Making AI Invisible
+            </h2>
+            
+            <div class="lesson-card">
+                <div class="lesson-header">
+                    <div>
+                        <div class="lesson-title">Lesson 7: Code Review & Documentation</div>
+                    </div>
+                    <div class="lesson-meta">Day 3 • 9:00 AM<br>1hr 20min</div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lecture-section">
+                        <div class="section-label"><span class="time">20 min</span> Lecture</div>
+                        <ul>
+                            <li>Pre-PR self-review: catching issues before teammates do</li>
+                            <li>Security vulnerability patterns AI can spot</li>
+                            <li>Documentation debt: the silent productivity killer</li>
+                            <li>Demo: Review + document a module in 10 minutes</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-section">
+                        <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
+                        <ul>
+                            <li><strong>Task 1:</strong> Review your own recent PR with AI</li>
+                            <li><strong>Task 2:</strong> Scan code for security issues</li>
+                            <li><strong>Task 3:</strong> Generate README for an existing project</li>
+                            <li><strong>Task 4:</strong> Add docstrings to undocumented functions</li>
+                        </ul>
+                        <div class="outcome"><strong>Outcome:</strong> Pre-PR checklist that catches 90% of review comments</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lesson-card">
+                <div class="lesson-header">
+                    <div>
+                        <div class="lesson-title">Lesson 8: LLMs in Your CI Pipeline</div>
+                    </div>
+                    <div class="lesson-meta">Day 3 • 10:30 AM<br>1hr 20min</div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lecture-section">
+                        <div class="section-label"><span class="time">20 min</span> Lecture</div>
+                        <ul>
+                            <li>Why automated code review matters: catching issues before humans review</li>
+                            <li>Architecture: GitHub Actions, GitLab CI, or webhooks + LLM APIs</li>
+                            <li>What LLMs can catch: security issues, style violations, logic errors, missing tests</li>
+                            <li>Demo: A GitHub Action that reviews PRs with Claude/GPT</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-section">
+                        <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
+                        <ul>
+                            <li><strong>Task 1:</strong> Set up a GitHub Action that calls an LLM API on PR diffs</li>
+                            <li><strong>Task 2:</strong> Craft a system prompt optimized for code review (security, style, bugs)</li>
+                            <li><strong>Task 3:</strong> Handle context limits: chunking large PRs, summarizing files</li>
+                            <li><strong>Task 4:</strong> Post review comments back to the PR automatically</li>
+                        </ul>
+                        <div class="prompt-box">
+                            <div class="prompt-label">CI Review Prompt Template</div>
+                            "You are a senior code reviewer. Analyze this diff for: 1) Security vulnerabilities, 2) Logic errors, 3) Performance issues, 4) Missing error handling. Be specific with line numbers. Only flag real issues—no nitpicks."
+                        </div>
+                        <div class="outcome"><strong>Outcome:</strong> A working CI pipeline that reviews every PR with AI before human review</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lesson-card">
+                <div class="lesson-header">
+                    <div>
+                        <div class="lesson-title">Open Lab / Catch-up Session</div>
+                    </div>
+                    <div class="lesson-meta">Day 3 • 11:50 AM<br>1hr 10min</div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lecture-section">
+                        <div class="section-label"><span class="time">10 min</span> Quick Recap</div>
+                        <ul>
+                            <li>Review key concepts from Days 1-3</li>
+                            <li>Address common questions and stumbling blocks</li>
+                            <li>Share wins and breakthroughs from the group</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-section">
+                        <div class="section-label"><span class="time">60 min</span> Open Practice</div>
+                        <ul>
+                            <li><strong>Option A:</strong> Catch up on any exercises from earlier lessons</li>
+                            <li><strong>Option B:</strong> Apply techniques to your own real work project</li>
+                            <li><strong>Option C:</strong> Pair with a colleague to tackle a shared challenge</li>
+                            <li><strong>Option D:</strong> Experiment with advanced prompt techniques</li>
+                            <li><strong>1:1 Support:</strong> Instructor available for individual questions</li>
+                        </ul>
+                        <div class="outcome"><strong>Outcome:</strong> Consolidate learning before moving to advanced patterns</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DAY 4 -->
+        <div class="phase-section">
+            <h2 class="phase-title">
+                <span class="phase-badge p4">Day 4</span>
+                Advanced Patterns — Power User Techniques
+            </h2>
+            
+            <div class="lesson-card">
+                <div class="lesson-header">
+                    <div>
+                        <div class="lesson-title">Lesson 9: AI-Assisted Refactoring</div>
+                    </div>
+                    <div class="lesson-meta">Day 4 • 9:00 AM<br>1hr 20min</div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lecture-section">
+                        <div class="section-label"><span class="time">20 min</span> Lecture</div>
+                        <ul>
+                            <li>Refactoring patterns AI handles well</li>
+                            <li>Modernizing legacy code safely</li>
+                            <li>Extracting functions, classes, modules</li>
+                            <li>Demo: Refactor a 500-line function</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-section">
+                        <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
+                        <ul>
+                            <li><strong>Task 1:</strong> Convert callback hell to async/await</li>
+                            <li><strong>Task 2:</strong> Extract a god class into smaller components</li>
+                            <li><strong>Task 3:</strong> Modernize old API usage patterns</li>
+                            <li><strong>Task 4:</strong> Add types to untyped JavaScript</li>
+                        </ul>
+                        <div class="outcome"><strong>Outcome:</strong> Refactoring playbook for common legacy patterns</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lesson-card">
+                <div class="lesson-header">
+                    <div>
+                        <div class="lesson-title">Lesson 10: Cross-Language & "Not My Stack"</div>
+                    </div>
+                    <div class="lesson-meta">Day 4 • 10:30 AM<br>1hr 20min</div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lecture-section">
+                        <div class="section-label"><span class="time">20 min</span> Lecture</div>
+                        <ul>
+                            <li>When and why to translate code between languages</li>
+                            <li>Preserving idioms vs. literal translation</li>
+                            <li>Frontend for backend devs, backend for frontend devs</li>
+                            <li>Demo: Python → Rust with proper error handling</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-section">
+                        <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
+                        <ul>
+                            <li><strong>Task 1:</strong> Port a script to a new language</li>
+                            <li><strong>Task 2:</strong> Build something in your weak area</li>
+                            <li><strong>Task 3:</strong> Fix a CSS layout (backend devs) / write SQL (frontend devs)</li>
+                            <li><strong>Pair work:</strong> Each person tackles the other's specialty</li>
+                        </ul>
+                        <div class="outcome"><strong>Outcome:</strong> Reduced fear of "not my area" tasks</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lesson-card">
+                <div class="lesson-header">
+                    <div>
+                        <div class="lesson-title">Lesson 11: API Integration & Pipelines</div>
+                    </div>
+                    <div class="lesson-meta">Day 4 • 11:50 AM<br>1hr 10min</div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lecture-section">
+                        <div class="section-label"><span class="time">20 min</span> Lecture</div>
+                        <ul>
+                            <li>Using AI APIs programmatically (OpenAI, Anthropic, etc.)</li>
+                            <li>Chaining prompts for complex tasks</li>
+                            <li>Building AI-powered scripts and tools</li>
+                            <li>Demo: Build a custom AI-powered CLI tool</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-section">
+                        <div class="section-label"><span class="time">50 min</span> Exercise (includes breaks)</div>
+                        <ul>
+                            <li><strong>Task 1:</strong> Write a script that calls an AI API</li>
+                            <li><strong>Task 2:</strong> Build a git hook that uses AI</li>
+                            <li><strong>Task 3:</strong> Chain 3+ prompts to solve a complex problem</li>
+                            <li><strong>Challenge:</strong> Create a self-improving prompt chain</li>
+                        </ul>
+                        <div class="outcome"><strong>Outcome:</strong> A custom AI-powered tool you'll actually use</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DAY 5 -->
+        <div class="phase-section">
+            <h2 class="phase-title">
+                <span class="phase-badge p5">Day 5</span>
+                Strategy & Capstone — Making It Stick
+            </h2>
+            
+            <div class="lesson-card">
+                <div class="lesson-header">
+                    <div>
+                        <div class="lesson-title">Lesson 12: When AI Fails + Security</div>
+                    </div>
+                    <div class="lesson-meta">Day 5 • 9:00 AM<br>1hr 20min</div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lecture-section">
+                        <div class="section-label"><span class="time">20 min</span> Lecture</div>
+                        <ul>
+                            <li>Recognizing AI limitations and hallucinations</li>
+                            <li>Tasks AI consistently struggles with</li>
+                            <li>What goes to the AI (and what stays local)</li>
+                            <li>Company policies, compliance, and sanitization</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-section">
+                        <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
+                        <ul>
+                            <li><strong>Task 1:</strong> Intentionally break AI with hard problems</li>
+                            <li><strong>Task 2:</strong> Spot hallucinations in generated code</li>
+                            <li><strong>Task 3:</strong> Audit what you've shared with AI this week</li>
+                            <li><strong>Group work:</strong> Draft team AI usage guidelines</li>
+                        </ul>
+                        <div class="outcome"><strong>Outcome:</strong> Healthy skepticism + clear policy for safe AI usage</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lesson-card">
+                <div class="lesson-header">
+                    <div>
+                        <div class="lesson-title">Lesson 13: Team Adoption Strategies</div>
+                    </div>
+                    <div class="lesson-meta">Day 5 • 10:30 AM<br>1hr 20min</div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lecture-section">
+                        <div class="section-label"><span class="time">20 min</span> Lecture</div>
+                        <ul>
+                            <li>Rolling out AI to skeptical teammates</li>
+                            <li>Measuring productivity impact</li>
+                            <li>Handling resistance and concerns</li>
+                            <li>Building an AI champions program</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-section">
+                        <div class="section-label"><span class="time">60 min</span> Exercise (includes breaks)</div>
+                        <ul>
+                            <li><strong>Task 1:</strong> Create a 5-minute demo for skeptical colleagues</li>
+                            <li><strong>Task 2:</strong> Draft a team adoption proposal</li>
+                            <li><strong>Task 3:</strong> Design metrics to track AI impact</li>
+                            <li><strong>Role-play:</strong> Practice handling objections</li>
+                        </ul>
+                        <div class="outcome"><strong>Outcome:</strong> Adoption toolkit to bring back to your team</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lesson-card">
+                <div class="lesson-header">
+                    <div>
+                        <div class="lesson-title">Lesson 14: Capstone Project</div>
+                    </div>
+                    <div class="lesson-meta">Day 5 • 11:50 AM<br>1hr 10min</div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lecture-section">
+                        <div class="section-label"><span class="time">20 min</span> Kickoff</div>
+                        <ul>
+                            <li>Project options and requirements</li>
+                            <li>How to demonstrate AI-assisted workflow</li>
+                            <li>Presentation format and timing</li>
+                            <li>Q&A and project selection</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-section">
+                        <div class="section-label"><span class="time">50 min</span> Build + Present</div>
+                        <ul>
+                            <li><strong>Option A:</strong> Build a small tool/feature using everything learned</li>
+                            <li><strong>Option B:</strong> Refactor/document existing code with AI</li>
+                            <li><strong>Option C:</strong> Create a custom AI-powered workflow for your team</li>
+                            <li><strong>Present:</strong> 3-minute demo showing before/after</li>
+                        </ul>
+                        <div class="outcome"><strong>Outcome:</strong> Tangible artifact + confidence to continue independently</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <div style="text-align: center; padding: 3rem 0; color: #666; border-top: 1px solid #222; margin-top: 2rem;">
+        <p><strong>Total Duration:</strong> 14 Lessons + 1 Open Lab × ~1hr 15min avg = ~19 hours of instruction</p>
+        <p style="margin-top: 0.5rem;">5 days × 4 hours (9 AM – 1 PM) | 20 min lecture + 50-60 min exercise per session</p>
+    </div>
+    
+</body>
+</html>
