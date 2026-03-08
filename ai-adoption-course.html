@@ -292,6 +292,49 @@
             }
         }
         
+        /* View Toggle */
+        .view-toggle {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 1rem;
+            background: #141414;
+            border: 1px solid #333;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #888;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+        
+        .view-toggle:hover {
+            background: #1f1f1f;
+            border-color: #555;
+            color: #e5e5e5;
+        }
+        
+        .view-toggle svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .view-toggle-label {
+            display: none;
+        }
+        
+        @media (min-width: 600px) {
+            .view-toggle-label {
+                display: inline;
+            }
+        }
+        
         .schedule-note {
             text-align: center;
             color: #666;
@@ -311,6 +354,19 @@
     </style>
 </head>
 <body>
+    <!-- View Toggle Button -->
+    <a href="ai-adoption-skill-tree.html" class="view-toggle" id="viewToggle" title="Switch to Skill Tree View">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="5" r="3"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <circle cx="6" cy="17" r="3"/>
+            <circle cx="18" cy="17" r="3"/>
+            <line x1="12" y1="12" x2="6" y2="14"/>
+            <line x1="12" y1="12" x2="18" y2="14"/>
+        </svg>
+        <span class="view-toggle-label">Skill Tree View</span>
+    </a>
+    
     <div class="header">
         <h1>AI for Programmers</h1>
         <p class="subtitle">A 5-Day Hands-On Training Course for the AI-Curious (and AI-Skeptical)</p>
@@ -995,5 +1051,11 @@
         <p style="margin-top: 0.5rem;">5 days × 4 hours (9 AM – 1 PM) | 20 min lecture + 50-60 min exercise per session</p>
     </div>
     
+    <script>
+        // Save view preference when clicking toggle
+        document.getElementById('viewToggle').addEventListener('click', function(e) {
+            localStorage.setItem('ai-course-view-preference', 'skill-tree');
+        });
+    </script>
 </body>
 </html>
