@@ -44,11 +44,14 @@
     <style>
       :root {
         --bg-deep: #0d0d0f;
+        --bg-deep-rgb: 13, 13, 15;
         --bg-mid: #151518;
+        --bg-mid-rgb: 21, 21, 24;
         --line-subtle: #2a2a30;
         --line-bright: #4a4a55;
         --node-locked: #1e1e24;
         --node-available: #252530;
+        --node-available-rgb: 37, 37, 48;
         --node-complete: #1a2a20;
 
         --day1: #4ade80;
@@ -210,10 +213,13 @@
         display: grid;
         grid-template-columns: 80px repeat(5, 1fr);
         gap: 3px;
-        background: var(--line-subtle);
+        background: rgba(42, 42, 48, 0.55);
         border-radius: 0;
         overflow: hidden;
         margin-bottom: 3rem;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
         clip-path: polygon(
           12px 0,
           calc(100% - 12px) 0,
@@ -227,7 +233,7 @@
       }
 
       .time-slot {
-        background: var(--bg-deep);
+        background: rgba(var(--bg-deep-rgb), 0.74);
         padding: 1rem 0.5rem;
         text-align: right;
         font-family: "JetBrains Mono", monospace;
@@ -237,11 +243,11 @@
       }
 
       .day-header {
-        background: var(--bg-mid);
+        background: rgba(var(--bg-mid-rgb), 0.78);
         padding: 1rem;
         text-align: center;
         font-weight: 600;
-        border-bottom: 2px solid var(--line-subtle);
+        border-bottom: 2px solid rgba(42, 42, 48, 0.72);
         font-size: 1.1rem;
       }
 
@@ -268,7 +274,7 @@
         padding: 0.75rem;
         margin: 4px;
         font-size: 0.85rem;
-        background: var(--node-available);
+        background: rgba(var(--node-available-rgb), 0.8);
         transition: all 0.3s ease;
         position: relative;
         clip-path: polygon(
@@ -329,7 +335,7 @@
       }
 
       .corner {
-        background: var(--bg-deep);
+        background: rgba(var(--bg-deep-rgb), 0.74);
       }
 
       /* Lesson Details */
@@ -585,11 +591,23 @@
           align-items: flex-start;
         }
 
+        .schedule-note-wrapper {
+          text-align: left;
+        }
+
         .schedule-note {
           flex-direction: column;
           gap: 0.5rem;
           text-align: left;
           padding: 1rem;
+          align-items: flex-start;
+        }
+
+        .schedule-note .schedule-item {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.25rem;
         }
 
         /* Mobile calendar: stacked card layout */
@@ -810,9 +828,9 @@
         background: var(--bg-mid);
         border: 1px solid var(--line-subtle);
         display: inline-flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        justify-content: flex-start;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
         clip-path: polygon(
           8px 0,
           calc(100% - 8px) 0,
@@ -830,8 +848,11 @@
         margin-bottom: 2rem;
       }
 
-      .schedule-note .full-row {
-        flex-basis: 100%;
+      .schedule-note .schedule-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        align-self: stretch;
       }
 
       .schedule-note code {
@@ -1111,10 +1132,8 @@
 
       <div class="schedule-note-wrapper">
         <div class="schedule-note">
-          <span class="full-row"
-            ><strong>Daily schedule:</strong> <code>9AM - 1PM</code></span
-          >
-          <span>3 sessions/day: 20min lecture + 1 hour exercise</span>
+          <span class="schedule-item"><strong>Daily schedule:</strong> <code>9AM - 1PM</code></span>
+          <span class="schedule-item">3 sessions/day: <code>20min lecture + 1 hour exercise</code></span>
         </div>
       </div>
 

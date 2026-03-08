@@ -33,11 +33,14 @@
     <style>
       :root {
         --bg-deep: #0d0d0f;
+        --bg-deep-rgb: 13, 13, 15;
         --bg-mid: #151518;
+        --bg-mid-rgb: 21, 21, 24;
         --line-subtle: #2a2a30;
         --line-bright: #4a4a55;
         --node-locked: #1e1e24;
         --node-available: #252530;
+        --node-available-rgb: 37, 37, 48;
         --node-complete: #1a2a20;
 
         --day1: #4ade80;
@@ -199,10 +202,13 @@
         display: grid;
         grid-template-columns: 80px repeat(5, 1fr);
         gap: 3px;
-        background: var(--line-subtle);
+        background: rgba(42, 42, 48, 0.55);
         border-radius: 0;
         overflow: hidden;
         margin-bottom: 3rem;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
         clip-path: polygon(
           12px 0,
           calc(100% - 12px) 0,
@@ -216,7 +222,7 @@
       }
 
       .time-slot {
-        background: var(--bg-deep);
+        background: rgba(var(--bg-deep-rgb), 0.74);
         padding: 1rem 0.5rem;
         text-align: right;
         font-family: "JetBrains Mono", monospace;
@@ -226,11 +232,11 @@
       }
 
       .day-header {
-        background: var(--bg-mid);
+        background: rgba(var(--bg-mid-rgb), 0.78);
         padding: 1rem;
         text-align: center;
         font-weight: 600;
-        border-bottom: 2px solid var(--line-subtle);
+        border-bottom: 2px solid rgba(42, 42, 48, 0.72);
         font-size: 1.1rem;
       }
 
@@ -257,7 +263,7 @@
         padding: 0.75rem;
         margin: 4px;
         font-size: 0.85rem;
-        background: var(--node-available);
+        background: rgba(var(--node-available-rgb), 0.8);
         transition: all 0.3s ease;
         position: relative;
         clip-path: polygon(
@@ -318,7 +324,7 @@
       }
 
       .corner {
-        background: var(--bg-deep);
+        background: rgba(var(--bg-deep-rgb), 0.74);
       }
 
       /* Lesson Details */
@@ -585,21 +591,28 @@
           align-items: flex-start;
         }
 
+        .schedule-note-wrapper {
+          text-align: left;
+        }
+
         .schedule-note {
           flex-direction: column;
           gap: 0.5rem;
           text-align: left;
           padding: 1rem;
+          align-items: flex-start;
         }
 
-        .schedule-note .full-row {
+        .schedule-note .schedule-item {
           display: flex;
-          flex-wrap: wrap;
+          flex-direction: column;
+          align-items: flex-start;
           gap: 0.25rem;
         }
 
         .schedule-note code {
           word-break: break-word;
+          vertical-align: middle;
         }
 
         /* Mobile calendar: stacked card layout */
@@ -832,9 +845,9 @@
         background: var(--bg-mid);
         border: 1px solid var(--line-subtle);
         display: inline-flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        justify-content: flex-start;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
         clip-path: polygon(
           8px 0,
           calc(100% - 8px) 0,
@@ -852,14 +865,18 @@
         margin-bottom: 2rem;
       }
 
-      .schedule-note .full-row {
-        flex-basis: 100%;
+      .schedule-note .schedule-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        align-self: stretch;
       }
 
       .schedule-note code {
         background: var(--node-available);
         padding: 0.2rem 0.5rem;
         color: var(--day1);
+        vertical-align: middle;
         clip-path: polygon(
           3px 0,
           calc(100% - 3px) 0,
@@ -950,6 +967,14 @@
         );
       }
 
+      .team-avatar-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.5rem;
+        flex-shrink: 0;
+      }
+
       .team-avatar {
         width: 80px;
         height: 80px;
@@ -978,6 +1003,17 @@
         font-weight: 600;
         margin-bottom: 0.25rem;
         color: var(--text-primary);
+      }
+
+      .email-icon {
+        display: inline-block;
+        color: var(--text-secondary);
+        opacity: 0.4;
+        transition: opacity 0.2s;
+      }
+
+      .email-icon:hover {
+        opacity: 0.7;
       }
 
       .team-role {
@@ -1111,12 +1147,8 @@
 
       <div class="schedule-note-wrapper">
         <div class="schedule-note">
-          <span class="full-row"
-            ><strong>Daily schedule:</strong> <code>9AM - 1PM</code></span
-          >
-          <span class="full-row"
-            >3 sessions/day: <code>20min lecture + 1 hour exercise</code></span
-          >
+          <span class="schedule-item"><strong>Daily schedule:</strong> <code>9AM - 1PM</code></span>
+          <span class="schedule-item">3 sessions/day: <code>20min lecture + 1 hour exercise</code></span>
         </div>
       </div>
 
@@ -2144,11 +2176,14 @@
           <h2 class="team-title">Meet Your Instructors</h2>
           <div class="team-grid">
             <div class="team-card">
-              <img
-                class="team-avatar"
-                src="https://www.mindviewllc.com/publicity/BruceEckel.jpg"
-                alt="Bruce Eckel"
-              />
+              <div class="team-avatar-wrapper">
+                <img
+                  class="team-avatar"
+                  src="https://www.mindviewllc.com/publicity/BruceEckel.jpg"
+                  alt="Bruce Eckel"
+                />
+                <a href="mailto:bruceteckel@gmail.com" class="email-icon" title="Email Bruce"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></a>
+              </div>
               <div class="team-info">
                 <h3 class="team-name">Bruce Eckel</h3>
                 <p class="team-role">Author & Consultant</p>
@@ -2162,11 +2197,14 @@
               </div>
             </div>
             <div class="team-card">
-              <img
-                class="team-avatar"
-                src="https://avatars.githubusercontent.com/u/20440899?v=4"
-                alt="Cody Bontecou"
-              />
+              <div class="team-avatar-wrapper">
+                <img
+                  class="team-avatar"
+                  src="https://avatars.githubusercontent.com/u/20440899?v=4"
+                  alt="Cody Bontecou"
+                />
+                <a href="mailto:cody@isolated.tech" class="email-icon" title="Email Cody"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></a>
+              </div>
               <div class="team-info">
                 <h3 class="team-name">Cody Bontecou</h3>
                 <p class="team-role">Developer & AI Practitioner</p>
