@@ -167,38 +167,6 @@
         color: var(--text-secondary);
       }
 
-      .legend {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-      }
-
-      .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-family: "JetBrains Mono", monospace;
-        font-size: 0.85rem;
-        color: var(--text-secondary);
-      }
-
-      .legend-color {
-        width: 12px;
-        height: 12px;
-        clip-path: polygon(
-          3px 0,
-          calc(100% - 3px) 0,
-          100% 3px,
-          100% calc(100% - 3px),
-          calc(100% - 3px) 100%,
-          3px 100%,
-          0 calc(100% - 3px),
-          0 3px
-        );
-      }
-
       .calendar {
         display: grid;
         grid-template-columns: 80px repeat(5, 1fr);
@@ -600,16 +568,6 @@
           display: none;
         }
 
-        .legend {
-          flex-direction: column;
-          gap: 0.85rem;
-          align-items: flex-start;
-        }
-
-        .legend-item {
-          font-size: 0.9rem;
-        }
-
         .schedule-note-wrapper {
           text-align: left;
         }
@@ -828,46 +786,6 @@
         .stat-value {
           font-size: 2rem;
         }
-      }
-
-      /* View Toggle */
-      .view-toggle {
-        position: fixed;
-        top: 1.5rem;
-        right: 1.5rem;
-        z-index: 1000;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--bg-mid);
-        border: 1px solid var(--line-subtle);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        color: var(--text-secondary);
-        clip-path: polygon(
-          6px 0,
-          calc(100% - 6px) 0,
-          100% 6px,
-          100% calc(100% - 6px),
-          calc(100% - 6px) 100%,
-          6px 100%,
-          0 calc(100% - 6px),
-          0 6px
-        );
-      }
-
-      .view-toggle:hover {
-        background: var(--node-available);
-        border-color: var(--line-bright);
-        color: var(--text-primary);
-      }
-
-      .view-toggle svg {
-        width: 18px;
-        height: 18px;
       }
 
       .schedule-note {
@@ -2261,14 +2179,6 @@
       </footer>
     </div>
 
-    <script>
-      // Save view preference when clicking toggle
-      document
-        .getElementById("viewToggle")
-        .addEventListener("click", function (e) {
-          localStorage.setItem("ai-course-view-preference", "skill-tree");
-        });
-    </script>
   </body>
 </html>
 <!-- Sun Mar  8 13:45:17 MDT 2026 -->
