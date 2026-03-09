@@ -279,6 +279,49 @@
         line-height: 1.45;
       }
 
+      .session {
+        cursor: pointer;
+        isolation: isolate;
+      }
+
+      .session::after {
+        content: "View lesson ↗";
+        position: absolute;
+        right: 0.8rem;
+        bottom: 0.8rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.62rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent-color, var(--text-secondary));
+        opacity: 0;
+        transform: translateY(4px);
+        transition:
+          opacity 0.25s ease,
+          transform 0.25s ease;
+        pointer-events: none;
+      }
+
+      .session:hover::after,
+      .session:focus-visible::after,
+      .session.active::after {
+        opacity: 0.95;
+        transform: translateY(0);
+      }
+
+      .session:focus-visible {
+        outline: 2px solid var(--accent-color, var(--line-bright));
+        outline-offset: 3px;
+        transform: translate(-2px, -2px);
+      }
+
+      .session.active {
+        box-shadow:
+          0 0 0 1px var(--accent-color, var(--line-bright)),
+          0 16px 32px rgba(0, 0, 0, 0.3);
+        background: rgba(var(--node-available-rgb), 0.98);
+      }
+
       /* Phase colors - using CSS custom property for the accent bar */
       .phase-1 {
         --accent-color: var(--day1);
@@ -516,6 +559,190 @@
         color: var(--day1);
       }
 
+      .lesson-drawer-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(9, 10, 14, 0.72);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        z-index: 20;
+      }
+
+      .lesson-drawer {
+        --drawer-offset: 0px;
+        position: fixed;
+        left: 50%;
+        bottom: 0;
+        width: min(980px, calc(100vw - 2rem));
+        max-height: min(84vh, 920px);
+        transform: translate(-50%, calc(100% + 2rem + var(--drawer-offset)));
+        transition:
+          transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+          opacity 0.25s ease;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 21;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: none;
+        background: linear-gradient(
+          180deg,
+          rgba(var(--bg-mid-rgb), 0.98) 0%,
+          rgba(var(--bg-deep-rgb), 0.98) 100%
+        );
+        box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.45);
+        clip-path: polygon(
+          18px 0,
+          calc(100% - 18px) 0,
+          100% 18px,
+          100% 100%,
+          0 100%,
+          0 18px
+        );
+      }
+
+      body.drawer-open {
+        overflow: hidden;
+      }
+
+      body.drawer-open .lesson-drawer-backdrop {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      body.drawer-open .lesson-drawer {
+        transform: translate(-50%, var(--drawer-offset));
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .lesson-drawer.dragging {
+        transition: none;
+      }
+
+      .drawer-handle {
+        width: 92px;
+        height: 6px;
+        border-radius: 999px;
+        margin: 0.9rem auto 0;
+        background: linear-gradient(
+          90deg,
+          var(--line-subtle),
+          var(--line-bright)
+        );
+        opacity: 0.9;
+        touch-action: none;
+        user-select: none;
+      }
+
+      .drawer-topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        touch-action: none;
+        user-select: none;
+      }
+
+      .drawer-kicker {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.75rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+      }
+
+      .drawer-close {
+        border: 1px solid var(--line-subtle);
+        background: rgba(var(--bg-deep-rgb), 0.7);
+        color: var(--text-primary);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.65rem 0.9rem;
+        cursor: pointer;
+        clip-path: polygon(
+          6px 0,
+          calc(100% - 6px) 0,
+          100% 6px,
+          100% calc(100% - 6px),
+          calc(100% - 6px) 100%,
+          6px 100%,
+          0 calc(100% - 6px),
+          0 6px
+        );
+      }
+
+      .drawer-close:hover,
+      .drawer-close:focus-visible {
+        border-color: var(--line-bright);
+        outline: none;
+      }
+
+      .drawer-scroll {
+        overflow-y: auto;
+        max-height: calc(min(84vh, 920px) - 72px);
+        padding: 0 1.5rem 1.5rem;
+      }
+
+      .drawer-summary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin: 1rem 0 1.25rem;
+      }
+
+      .drawer-summary-item {
+        padding: 0.9rem 1rem;
+        background: rgba(var(--bg-deep-rgb), 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        clip-path: polygon(
+          8px 0,
+          calc(100% - 8px) 0,
+          100% 8px,
+          100% calc(100% - 8px),
+          calc(100% - 8px) 100%,
+          8px 100%,
+          0 calc(100% - 8px),
+          0 8px
+        );
+      }
+
+      .drawer-summary-label {
+        display: block;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 0.35rem;
+      }
+
+      .drawer-summary-value {
+        color: var(--text-primary);
+        font-size: 1rem;
+        line-height: 1.4;
+      }
+
+      .drawer-content .lesson-card {
+        margin-bottom: 0;
+        border-color: rgba(255, 255, 255, 0.08);
+        background: rgba(var(--bg-mid-rgb), 0.88);
+      }
+
+      .drawer-content .lesson-title {
+        font-size: 1.55rem;
+      }
+
+      .drawer-content .lesson-meta {
+        min-width: 150px;
+      }
+
       @media (max-width: 1200px) {
         .lesson-content {
           grid-template-columns: 1fr;
@@ -744,6 +971,38 @@
         /* Disable hover effect on mobile */
         .session:hover {
           transform: none;
+        }
+
+        .session::after {
+          opacity: 0.95;
+          transform: translateY(0);
+          position: static;
+          display: inline-block;
+          margin-top: 0.5rem;
+          font-size: 0.64rem;
+        }
+
+        .lesson-drawer {
+          width: 100vw;
+          max-height: 88vh;
+          clip-path: none;
+          border-left: none;
+          border-right: none;
+          transform: translate(-50%, 100%);
+        }
+
+        .drawer-topbar,
+        .drawer-scroll {
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
+
+        .drawer-summary {
+          grid-template-columns: 1fr;
+        }
+
+        .drawer-content .lesson-title {
+          font-size: 1.28rem;
         }
 
         /* Lesson cards */
@@ -1097,7 +1356,7 @@
     <div class="content-wrapper">
       <div class="header">
         <h1>AI for Programmers</h1>
-        <p class="subtitle">A 1–5 Day Hands-On Workshop</p>
+        <p class="subtitle">A 2-5 Day Hands-On Workshop</p>
         <p class="subtitle" style="margin-top: 0.5rem">
           Bruce Eckel and Cody Bontecou
         </p>
@@ -1105,8 +1364,12 @@
 
       <div class="schedule-note-wrapper">
         <div class="schedule-note">
-          <span class="schedule-item"><strong>Daily schedule:</strong> <code>9AM - 1PM</code></span>
-          <span class="schedule-item">3 sessions/day: <code>20min lecture + 1 hour exercise</code></span>
+          <span class="schedule-item"
+            ><strong>Daily schedule:</strong> <code>9AM - 1PM</code></span
+          >
+          <span class="schedule-item"
+            >3 sessions/day: <code>20min lecture + 1 hour exercise</code></span
+          >
         </div>
       </div>
 
@@ -2129,6 +2392,33 @@
         </div>
       </div>
 
+      <div class="lesson-drawer-backdrop" hidden></div>
+      <aside
+        class="lesson-drawer"
+        id="lesson-drawer"
+        aria-hidden="true"
+        aria-modal="true"
+        aria-labelledby="lesson-drawer-title"
+        role="dialog"
+        hidden
+      >
+        <div class="drawer-handle" aria-hidden="true"></div>
+        <div class="drawer-topbar">
+          <p class="drawer-kicker">Lesson Detail</p>
+          <button
+            class="drawer-close"
+            type="button"
+            aria-label="Close lesson details"
+          >
+            Close
+          </button>
+        </div>
+        <div class="drawer-scroll">
+          <div class="drawer-summary"></div>
+          <div class="drawer-content"></div>
+        </div>
+      </aside>
+
       <footer class="footer">
         <div class="team-section">
           <h2 class="team-title">Meet Your Instructors</h2>
@@ -2140,7 +2430,24 @@
                   src="https://www.mindviewllc.com/publicity/BruceEckel.jpg"
                   alt="Bruce Eckel"
                 />
-                <a href="mailto:bruceteckel@gmail.com" class="email-icon" title="Email Bruce"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></a>
+                <a
+                  href="mailto:bruceteckel@gmail.com"
+                  class="email-icon"
+                  title="Email Bruce"
+                  ><svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                    <path d="m22 7-10 6L2 7" /></svg
+                ></a>
               </div>
               <div class="team-info">
                 <h3 class="team-name">Bruce Eckel</h3>
@@ -2161,7 +2468,24 @@
                   src="https://avatars.githubusercontent.com/u/20440899?v=4"
                   alt="Cody Bontecou"
                 />
-                <a href="mailto:cody@isolated.tech" class="email-icon" title="Email Cody"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></a>
+                <a
+                  href="mailto:cody@isolated.tech"
+                  class="email-icon"
+                  title="Email Cody"
+                  ><svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                    <path d="m22 7-10 6L2 7" /></svg
+                ></a>
               </div>
               <div class="team-info">
                 <h3 class="team-name">Cody Bontecou</h3>
@@ -2179,6 +2503,275 @@
       </footer>
     </div>
 
+    <script>
+      const sessions = Array.from(
+        document.querySelectorAll(".calendar .session"),
+      );
+      const lessonCards = Array.from(
+        document.querySelectorAll(".lessons-detail .lesson-card"),
+      );
+      const dayHeaders = Array.from(
+        document.querySelectorAll(".calendar .day-header"),
+      );
+      const drawer = document.getElementById("lesson-drawer");
+      const drawerBackdrop = document.querySelector(".lesson-drawer-backdrop");
+      const drawerContent = document.querySelector(".drawer-content");
+      const drawerSummary = document.querySelector(".drawer-summary");
+      const drawerKicker = document.querySelector(".drawer-kicker");
+      const drawerCloseButton = document.querySelector(".drawer-close");
+      const drawerHandle = document.querySelector(".drawer-handle");
+      const drawerTopbar = document.querySelector(".drawer-topbar");
+      const body = document.body;
+
+      let activeSession = null;
+      let lastTrigger = null;
+      let hideDrawerTimeout = null;
+      let dragPointerId = null;
+      let dragStartY = 0;
+      let currentDragOffset = 0;
+
+      const SWIPE_CLOSE_THRESHOLD = 120;
+
+      const lessonMap = new Map(
+        lessonCards
+          .map((card) => {
+            const title =
+              card.querySelector(".lesson-title")?.textContent || "";
+            const match = title.match(/Lesson\s+(\d+)/i);
+            return match ? [match[1], card] : null;
+          })
+          .filter(Boolean),
+      );
+
+      const dayMetaByPhase = new Map(
+        dayHeaders.map((header, index) => {
+          const parts = header.textContent
+            .split("\n")
+            .map((part) => part.trim())
+            .filter(Boolean);
+
+          return [
+            String(index + 1),
+            {
+              dayName: parts[0] || `Day ${index + 1}`,
+              dayLabel: parts[1] || `Day ${index + 1}`,
+              theme: parts[2] || "Hands-on workshop",
+            },
+          ];
+        }),
+      );
+
+      function getLessonNumberFromSession(session) {
+        const label = session.querySelector(".lesson-num")?.textContent || "";
+        return label.match(/Lesson\s+(\d+)/i)?.[1] || null;
+      }
+
+      function buildSummaryItem(label, value) {
+        return `
+          <div class="drawer-summary-item">
+            <span class="drawer-summary-label">${label}</span>
+            <div class="drawer-summary-value">${value}</div>
+          </div>
+        `;
+      }
+
+      function setDrawerOffset(offset) {
+        currentDragOffset = Math.max(0, offset);
+        drawer.style.setProperty("--drawer-offset", `${currentDragOffset}px`);
+      }
+
+      function resetDrawerDrag() {
+        dragPointerId = null;
+        dragStartY = 0;
+        currentDragOffset = 0;
+        drawer.classList.remove("dragging");
+        drawer.style.setProperty("--drawer-offset", "0px");
+        drawerBackdrop.style.removeProperty("opacity");
+      }
+
+      function updateBackdropForDrag(offset) {
+        const progress = Math.min(offset / 240, 1);
+        drawerBackdrop.style.opacity = String(1 - progress * 0.55);
+      }
+
+      function showDrawerShell() {
+        clearTimeout(hideDrawerTimeout);
+        resetDrawerDrag();
+        drawer.hidden = false;
+        drawerBackdrop.hidden = false;
+        drawer.setAttribute("aria-hidden", "false");
+
+        requestAnimationFrame(() => {
+          body.classList.add("drawer-open");
+        });
+      }
+
+      function hideDrawerShell() {
+        body.classList.remove("drawer-open");
+        drawer.setAttribute("aria-hidden", "true");
+        resetDrawerDrag();
+
+        hideDrawerTimeout = window.setTimeout(() => {
+          if (!body.classList.contains("drawer-open")) {
+            drawer.hidden = true;
+            drawerBackdrop.hidden = true;
+          }
+        }, 360);
+      }
+
+      function openLessonDrawer(session) {
+        const lessonNumber = getLessonNumberFromSession(session);
+        const sourceCard = lessonNumber ? lessonMap.get(lessonNumber) : null;
+
+        if (!sourceCard) return;
+
+        const phase = Array.from(session.classList)
+          .find((className) => className.startsWith("phase-"))
+          ?.replace("phase-", "");
+        const dayMeta = dayMetaByPhase.get(phase || "") || {};
+        const lessonTitle =
+          session.querySelector(".title")?.textContent?.trim() || "Lesson";
+        const teaser =
+          session.querySelector(".duration")?.textContent?.trim() ||
+          dayMeta.theme ||
+          "Workshop session";
+        const meta = sourceCard.querySelector(".lesson-meta")?.innerHTML || "";
+
+        const clonedCard = sourceCard.cloneNode(true);
+        const clonedTitle = clonedCard.querySelector(".lesson-title");
+        if (clonedTitle) clonedTitle.id = "lesson-drawer-title";
+
+        drawerContent.replaceChildren(clonedCard);
+        drawerSummary.innerHTML = [
+          buildSummaryItem("Lesson", `Lesson ${lessonNumber}`),
+          buildSummaryItem(
+            "Day",
+            `${dayMeta.dayName || "Workshop"} · ${dayMeta.theme || "Session"}`,
+          ),
+          buildSummaryItem("Focus", teaser),
+        ].join("");
+
+        drawerKicker.textContent = `${dayMeta.dayLabel || "Workshop"} • ${lessonTitle}`;
+
+        if (activeSession && activeSession !== session) {
+          activeSession.classList.remove("active");
+        }
+
+        activeSession = session;
+        lastTrigger = session;
+        activeSession.classList.add("active");
+
+        showDrawerShell();
+        drawerCloseButton.focus({ preventScroll: true });
+      }
+
+      function closeLessonDrawer({ restoreFocus = true } = {}) {
+        if (!body.classList.contains("drawer-open") && drawer.hidden) return;
+
+        if (activeSession) {
+          activeSession.classList.remove("active");
+        }
+
+        hideDrawerShell();
+
+        if (restoreFocus && lastTrigger) {
+          lastTrigger.focus({ preventScroll: true });
+        }
+      }
+
+      function handleDrawerDragStart(event) {
+        if (!body.classList.contains("drawer-open")) return;
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+
+        dragPointerId = event.pointerId;
+        dragStartY = event.clientY;
+        drawer.classList.add("dragging");
+
+        try {
+          event.currentTarget.setPointerCapture?.(event.pointerId);
+        } catch (error) {
+          // Ignore synthetic-event pointer capture failures.
+        }
+
+        event.preventDefault();
+      }
+
+      function handleDrawerDragMove(event) {
+        if (dragPointerId !== event.pointerId) return;
+
+        const offset = Math.max(0, event.clientY - dragStartY);
+        setDrawerOffset(offset);
+        updateBackdropForDrag(offset);
+      }
+
+      function handleDrawerDragEnd(event) {
+        if (dragPointerId !== event.pointerId) return;
+
+        const shouldClose = currentDragOffset >= SWIPE_CLOSE_THRESHOLD;
+
+        try {
+          if (event.currentTarget.hasPointerCapture?.(event.pointerId)) {
+            event.currentTarget.releasePointerCapture(event.pointerId);
+          }
+        } catch (error) {
+          // Ignore synthetic-event pointer capture failures.
+        }
+
+        if (shouldClose) {
+          closeLessonDrawer({ restoreFocus: false });
+          return;
+        }
+
+        drawer.classList.remove("dragging");
+        setDrawerOffset(0);
+        drawerBackdrop.style.removeProperty("opacity");
+        dragPointerId = null;
+        dragStartY = 0;
+      }
+
+      [drawerHandle, drawerTopbar].forEach((dragZone) => {
+        dragZone.addEventListener("pointerdown", handleDrawerDragStart);
+        dragZone.addEventListener("pointermove", handleDrawerDragMove);
+        dragZone.addEventListener("pointerup", handleDrawerDragEnd);
+        dragZone.addEventListener("pointercancel", handleDrawerDragEnd);
+      });
+
+      sessions.forEach((session) => {
+        const lessonNumber = getLessonNumberFromSession(session);
+        const title =
+          session.querySelector(".title")?.textContent?.trim() || "Lesson";
+        const phase = Array.from(session.classList)
+          .find((className) => className.startsWith("phase-"))
+          ?.replace("phase-", "");
+        const dayMeta = dayMetaByPhase.get(phase || "") || {};
+
+        session.tabIndex = 0;
+        session.setAttribute("role", "button");
+        session.setAttribute("aria-haspopup", "dialog");
+        session.setAttribute("aria-controls", "lesson-drawer");
+        session.setAttribute(
+          "aria-label",
+          `${dayMeta.dayName || "Workshop"}, Lesson ${lessonNumber || ""}: ${title}`,
+        );
+
+        session.addEventListener("click", () => openLessonDrawer(session));
+        session.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openLessonDrawer(session);
+          }
+        });
+      });
+
+      drawerBackdrop.addEventListener("click", closeLessonDrawer);
+      drawerCloseButton.addEventListener("click", closeLessonDrawer);
+
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeLessonDrawer();
+        }
+      });
+    </script>
   </body>
 </html>
-<!-- Sun Mar  8 13:45:17 MDT 2026 -->
+<!-- Sun Mar  8 15:56:11 MDT 2026 -->
